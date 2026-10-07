@@ -3,15 +3,18 @@
 import numpy as np
 import pytest
 
-from stresstest.generator import HBA1C_PER_UNIT, SHAPES, make_patients, true_effect
+from stresstest.generator import (
+    BMI,
+    EGFR,
+    HBA1C,
+    HBA1C_PER_UNIT,
+    SHAPES,
+    make_patients,
+    true_effect,
+)
+from stresstest.scoring import crude_error
 
 N = 200_000  # large, so chance differences are small
-
-
-def difference_in_means(patients):
-    """Average outcome on the GLP-1 drug minus average outcome on the SGLT2 drug."""
-    on_glp1 = patients.treated == 1
-    return patients.outcome[on_glp1].mean() - patients.outcome[~on_glp1].mean()
 
 
 def test_same_seed_gives_same_patients():
@@ -21,14 +24,42 @@ def test_same_seed_gives_same_patients():
 
 
 def test_true_effect_follows_the_stated_rule():
-    patients = make_patients(1000, strength=0.0)
+    f = make_patients(1000, strength=0.0).features
+    typical_man = f.assign(female=0, hba1c=HBA1C, egfr=EGFR, bmi=BMI)
+    assert np.allclose(true_effect(typical_man), 1.7)
+    # Women do 4.4 mmol/mol better on the GLP-1 drug than otherwise identical men.
+    assert np.allclose(true_effect(f.assign(female=1)) - true_effect(f.assign(female=0)), -4.4)
+
+
+def test_bmi_affects_both_drug_choice_and_outcome():
+    """BMI must not move drug choice alone, or it would act as an instrument."""
+    patients = make_patients(N, strength=0.0)
     f = patients.features
-    man_average_kidney = (f["female"] == 0) & (abs(f["egfr"] - 85) < 0.5)
-    assert np.allclose(true_effect(f[man_average_kidney]), 1.0, atol=0.05)
-    # Women do 4 mmol/mol better on the GLP-1 drug than men with the same kidney function.
-    women = f.assign(female=1)
-    men = f.assign(female=0)
-    assert np.allclose(true_effect(women) - true_effect(men), -4.0)
+    assert np.corrcoef(f["bmi"], patients.treated)[0, 1] > 0.1
+    assert np.allclose(true_effect(f.assign(bmi=f["bmi"] + 1)) - true_effect(f), 0.15)
+
+
+def test_cohort_resembles_the_published_one():
+    """Compare with Table 1 and the Results of Cardoso et al., Diabetologia 2024."""
+    patients = make_patients(N, strength=0.0)
+    f, glp1 = patients.features, patients.treated == 1
+    assert glp1.mean() == pytest.approx(0.25, abs=0.01)
+    assert f["female"][glp1].mean() == pytest.approx(0.467, abs=0.01)
+    assert f["female"][~glp1].mean() == pytest.approx(0.391, abs=0.01)
+    assert f["bmi"][glp1].mean() == pytest.approx(37.3, abs=0.4)
+    assert f["bmi"][~glp1].mean() == pytest.approx(33.7, abs=0.4)
+    assert f["egfr"][glp1].mean() == pytest.approx(92.0, abs=0.5)
+    assert f["hba1c"][glp1].mean() == pytest.approx(78.6, abs=0.5)
+    assert f["hba1c"][~glp1].mean() == pytest.approx(76.9, abs=0.5)
+    # HbA1c change on the SGLT2 drug: mean -12.0, SD 15.3.
+    assert patients.outcome[~glp1].mean() == pytest.approx(-12.0, abs=0.3)
+    assert patients.outcome[~glp1].std() == pytest.approx(15.3, abs=0.5)
+    # True effects: average near zero; SGLT2 better by more than 3 for 17.5%,
+    # GLP-1 better by more than 3 for 20.3%.
+    effect = patients.true_effect
+    assert effect.mean() == pytest.approx(-0.1, abs=0.1)
+    assert (effect > 3).mean() == pytest.approx(0.175, abs=0.03)
+    assert (effect < -3).mean() == pytest.approx(0.203, abs=0.03)
 
 
 def test_hidden_factor_is_off_at_zero_strength():
@@ -47,9 +78,7 @@ def test_hidden_factor_biases_a_naive_comparison(shape):
     """With the hidden factor on, comparing the two drug groups gives the wrong answer."""
     off = make_patients(N, strength=0.0, shape=shape)
     on = make_patients(N, strength=1.0, shape=shape)
-    error_off = difference_in_means(off) - off.true_effect[off.treated == 1].mean()
-    error_on = difference_in_means(on) - on.true_effect[on.treated == 1].mean()
-    assert abs(error_on) > abs(error_off) + 1.0
+    assert crude_error(on) > crude_error(off) + 1.0
 
 
 @pytest.mark.parametrize("shape", ["linear", "threshold"])

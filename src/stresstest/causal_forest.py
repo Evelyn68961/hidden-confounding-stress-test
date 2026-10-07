@@ -6,8 +6,8 @@ from stochtree import BCFModel
 from stresstest.generator import Patients
 
 CHAINS = 4  # independent runs, compared with each other to check the answer is stable
-WARMUP = 200  # draws thrown away at the start of each chain
-DRAWS = 500  # draws kept from each chain
+WARMUP = 500  # draws thrown away at the start of each chain
+DRAWS = 2000  # draws kept from each chain
 
 
 def fit_causal_forest(patients: Patients, seed: int = 0) -> np.ndarray:

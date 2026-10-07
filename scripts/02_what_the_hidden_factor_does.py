@@ -9,18 +9,11 @@ Run:  uv run python scripts/02_what_the_hidden_factor_does.py
 """
 
 from stresstest.generator import SHAPES, make_patients
+from stresstest.scoring import crude_error
 
 N = 400_000  # large, so chance differences are small
 STRENGTHS = (0.0, 0.5, 1.0)
 SEED = 7
-
-
-def crude_error(patients):
-    """Difference between the two drug groups, minus the true average effect."""
-    on_glp1 = patients.treated == 1
-    difference = patients.outcome[on_glp1].mean() - patients.outcome[~on_glp1].mean()
-    return difference - patients.true_effect.mean()
-
 
 print("shape      strength | top 16% of hidden factor: | outcome variance | extra error of a")
 print("                    | GLP-1 group  SGLT2 group  | from hidden      | crude comparison")

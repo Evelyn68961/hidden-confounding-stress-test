@@ -35,6 +35,17 @@ def score(effect_draws: np.ndarray, true_effect: np.ndarray) -> dict:
     }
 
 
+def crude_error(patients) -> float:
+    """Error of the simplest analysis: compare the two drug groups directly.
+
+    Average outcome on the GLP-1 drug minus average outcome on the SGLT2 drug,
+    minus the true average effect. No adjustment for anything.
+    """
+    on_glp1 = patients.treated == 1
+    difference = patients.outcome[on_glp1].mean() - patients.outcome[~on_glp1].mean()
+    return float(difference - patients.true_effect.mean())
+
+
 def convergence(effect_draws: np.ndarray) -> dict:
     """Check that the chains agree, using R-hat (the same check Stan reports).
 

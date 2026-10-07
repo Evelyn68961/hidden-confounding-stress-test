@@ -14,8 +14,14 @@ outcome. The models never see it. Two settings control it:
     strength  how strong the hidden factor is (0 switches it off)
     shape     how it acts on the outcome: "linear", "threshold" or "effect"
 
-The sizes of the effects below are illustrative. They follow the direction of
-published findings but were not estimated from any patient data.
+Where the numbers come from
+---------------------------
+The patients are tuned to resemble the published UK cohort in Cardoso et al.,
+Diabetologia 2024;67:822-836 (people starting an SGLT2 inhibitor or a GLP-1
+receptor agonist in CPRD). No patient data were used, only figures printed in
+that paper. See docs/calibration.md for each number, its source and how
+closely the simulation reproduces it. Numbers marked "chosen" there have no
+published source.
 """
 
 from dataclasses import dataclass
@@ -25,11 +31,14 @@ import pandas as pd
 
 SHAPES = ("linear", "threshold", "effect")
 
+# Typical patient, used as the reference point in the formulas below.
+AGE, HBA1C, BMI, EGFR = 58, 77, 34.6, 94
+
 # What one unit of `strength` means.
 LOG_ODDS_PER_UNIT = 1.0  # shift in the log-odds of getting the GLP-1 drug, per SD of the hidden factor
 HBA1C_PER_UNIT = 5.0  # shift in the outcome (mmol/mol), per SD of the hidden factor
 
-NOISE_SD = 10.0  # unexplained variation in HbA1c change (mmol/mol)
+NOISE_SD = 12.5  # unexplained variation in HbA1c change (mmol/mol)
 
 
 @dataclass
@@ -53,13 +62,15 @@ def true_effect(features: pd.DataFrame) -> np.ndarray:
     """Difference in HbA1c change, GLP-1 minus SGLT2, for each patient.
 
     Negative means the GLP-1 drug lowers HbA1c more for that patient.
-    Women do better on the GLP-1 drug; patients with good kidney function
-    do better on the SGLT2 drug.
+    Women do better on the GLP-1 drug. A higher starting HbA1c, better kidney
+    function and a higher BMI each favour the SGLT2 drug.
     """
     return (
-        1.0
-        - 4.0 * features["female"]
-        + 0.10 * (features["egfr"] - 85)
+        1.7
+        - 4.4 * features["female"]
+        + 0.08 * (features["hba1c"] - HBA1C)
+        + 0.08 * (features["egfr"] - EGFR)
+        + 0.15 * (features["bmi"] - BMI)
     ).to_numpy()
 
 
@@ -70,8 +81,8 @@ def baseline_response(features: pd.DataFrame) -> np.ndarray:
     """
     return (
         -12.0
-        - 0.5 * (features["hba1c"] - 70)
-        - 0.05 * (features["age"] - 60)
+        - 0.5 * (features["hba1c"] - HBA1C)
+        - 0.05 * (features["age"] - AGE)
     ).to_numpy()
 
 
@@ -99,21 +110,24 @@ def make_patients(n: int, strength: float, shape: str = "linear", seed: int = 0)
 
     features = pd.DataFrame(
         {
-            "age": rng.normal(60, 10, n).clip(25, 90),
-            "female": rng.binomial(1, 0.4, n),
-            "hba1c": 58 + rng.gamma(shape=4.0, scale=4.0, size=n),  # mmol/mol at the start
-            "bmi": rng.normal(32, 6, n).clip(18, 60),
-            "egfr": rng.normal(85, 18, n).clip(30, 130),
+            "age": rng.normal(AGE, 11, n).clip(25, 90),
+            "female": rng.binomial(1, 0.41, n),
+            "hba1c": 53 + rng.gamma(shape=2.0, scale=12.0, size=n),  # mmol/mol at the start
+            "bmi": rng.normal(BMI, 7, n).clip(18, 65),
+            "egfr": rng.normal(EGFR, 17, n).clip(30, 140),
         }
     )
     hidden = rng.normal(0, 1, n)
 
-    # Drug choice: heavier patients get the GLP-1 drug more often, patients with
-    # good kidney function get the SGLT2 drug more often, and the hidden factor
-    # pushes towards the GLP-1 drug.
+    # Drug choice. About one patient in four gets the GLP-1 drug. Women, heavier
+    # patients and patients with a higher HbA1c get it more often; patients with
+    # good kidney function get it less often. The hidden factor pushes towards it.
     log_odds = (
-        0.08 * (features["bmi"] - 32)
-        - 0.02 * (features["egfr"] - 85)
+        -1.3
+        + 0.31 * features["female"]
+        + 0.073 * (features["bmi"] - BMI)
+        - 0.009 * (features["egfr"] - EGFR)
+        + 0.006 * (features["hba1c"] - HBA1C)
         + strength * LOG_ODDS_PER_UNIT * hidden
     ).to_numpy()
     propensity = 1 / (1 + np.exp(-log_odds))
