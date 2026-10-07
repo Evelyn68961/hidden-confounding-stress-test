@@ -40,7 +40,7 @@ findings but were not estimated from patient data.
 
 | Step | Content | State |
 |---|---|---|
-| 1 | Patient generator; Bayesian causal forest with the hidden factor off | Done |
+| 1 | Patient generator; Bayesian causal forest with the hidden factor off; what each setting of the hidden factor does to the data | Done ([report 01](reports/01_causal_forest_no_hidden_factor.md), [report 02](reports/02_what_the_hidden_factor_does.md)) |
 | 2 | Causal forest across three strengths and three shapes | Not started |
 | 3 | Joint model of drug choice and outcome in PyMC | Not started |
 | 4 | Figures and write-up | Not started |
@@ -79,6 +79,7 @@ Requires [uv](https://docs.astral.sh/uv/).
 uv sync
 uv run pytest
 uv run python scripts/01_causal_forest_no_hidden_factor.py
+uv run python scripts/02_what_the_hidden_factor_does.py
 ```
 
 ## Layout
@@ -87,6 +88,9 @@ uv run python scripts/01_causal_forest_no_hidden_factor.py
 - `src/stresstest/causal_forest.py` fits the Bayesian causal forest ([stochtree](https://stochtree.ai/)).
 - `src/stresstest/scoring.py` compares estimates with the truth.
 - `tests/` checks that the generator does what it says.
+- `scripts/` holds one numbered script per run or analysis.
+- `reports/` holds one progress report per script: the question, what was run,
+  the result, how to read it and its limits. Start at [reports/README.md](reports/README.md).
 
 ## Reference
 
