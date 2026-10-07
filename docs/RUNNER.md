@@ -9,7 +9,7 @@ simulation on a computer other than the author's laptop.
 |---|---|---|
 | Writes code, tests, docs, reports | Yes | **No** |
 | Runs fits | Yes, its own range of repeats | Yes, the range it is given |
-| Writes to | everything | **only** `results/generator-v<N>/<ITS COMPUTER NAME>.csv` and `results/generator-v<N>/<ITS COMPUTER NAME>_RUNLOG.md` |
+| Writes to | everything | **only** files named after itself: `results/generator-v<N>/<ITS COMPUTER NAME>.csv`, `results/generator-v<N>/<ITS COMPUTER NAME>_RUNLOG.md`, and the two check files `results/generator-v<N>/crosscheck/<ITS COMPUTER NAME>_fingerprints.csv` and `..._refits.csv` |
 | Decides what a result means | Yes | No. It reports numbers and problems. |
 
 The runner never edits code, tests, docs, reports, the README, or another
@@ -32,6 +32,22 @@ computer's result files. If something looks wrong, it stops and reports.
   repeat number is also the random seed, so repeat 7 means the same simulated
   patients on every computer. The script also skips any fit that is already
   saved in any computer's file.
+
+## Checking that the computers agree
+
+Because each computer has its own range of repeats, a hidden difference
+between the computers would look like a difference between the two ranges.
+Three checks guard against that (`scripts/04_cross_check.py`):
+
+- **Fingerprints.** Each computer simulates the same 14 datasets and saves a
+  short code for each. Equal codes mean the two computers simulate identical
+  patients. This takes seconds and is done before the long run.
+- **Refits.** Each computer fits three datasets from the other computer's
+  range. The scores are compared with the other computer's own results for
+  those datasets. This shows whether the sampler gives the same answer on
+  both. The refits go to a separate file and never enter the main results.
+- **Scores by computer.** The comparison prints each setting's scores
+  separately for each computer.
 
 ## Steps for the runner
 
@@ -60,7 +76,18 @@ computer's result files. If something looks wrong, it stops and reports.
    "An Application Control policy has blocked this file". Run the same command
    again. Do not change any security setting.
 
-4. **Run the range you were given.** Example for repeats 10 to 19:
+4. **Save your fingerprints and push them before the long run.** It takes
+   seconds, and it shows early whether your computer simulates the same
+   patients as the lead's.
+   ```
+   uv run python scripts/04_cross_check.py fingerprint
+   uv run python scripts/04_cross_check.py compare
+   ```
+   If `compare` reports any dataset that differs between computers, do not
+   start the long run. Stop and report. Otherwise commit and push the
+   fingerprints file (see step 6 for how).
+
+5. **Run the range you were given.** Example for repeats 10 to 19:
    ```
    uv run python scripts/03_causal_forest_grid.py --repeats 10-19
    ```
@@ -73,10 +100,10 @@ computer's result files. If something looks wrong, it stops and reports.
    - Do not change `CHAINS`, `WARMUP`, `DRAWS`, `N_PATIENTS` or any other
      setting.
 
-5. **Report by committing only your own files.** About once an hour while it
+6. **Report by committing only your own files.** About once an hour while it
    runs, and once more when it prints `finished`:
    ```
-   git add results/generator-v2/<YOUR COMPUTER NAME>.csv results/generator-v2/<YOUR COMPUTER NAME>_RUNLOG.md
+   git add results/generator-v2/<YOUR COMPUTER NAME>.csv results/generator-v2/<YOUR COMPUTER NAME>_RUNLOG.md results/generator-v2/crosscheck/<YOUR COMPUTER NAME>_*.csv
    git commit -m "Results: <YOUR COMPUTER NAME>, generator v2, <number> fits"
    git pull --rebase
    git push
@@ -84,7 +111,16 @@ computer's result files. If something looks wrong, it stops and reports.
    Replace `v2` with the folder the script reports if it differs. Use
    `git add` with those exact paths. Never `git add -A` or `git add .`.
 
-6. **Keep a run log** in `results/generator-v<N>/<YOUR COMPUTER NAME>_RUNLOG.md`:
+7. **After the long run, refit three of the other computer's datasets.** The
+   lead tells you which repeat. For the lead's repeat 0:
+   ```
+   uv run python scripts/04_cross_check.py refit --repeat 0
+   ```
+   It takes about 20 to 40 minutes and saves to your `_refits.csv` file.
+   Commit and push it as in step 6. Do not run `refit` while the long run is
+   still going; it would compete for memory.
+
+8. **Keep a run log** in `results/generator-v<N>/<YOUR COMPUTER NAME>_RUNLOG.md`:
    - the command you ran, and the first line the script printed (it states the
      generator version, code commit, computer and range);
    - start and end time;
