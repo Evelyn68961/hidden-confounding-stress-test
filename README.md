@@ -50,17 +50,18 @@ number, its source and how closely the simulation reproduces it are in
 ### Step 1: nothing hidden
 
 One simulated dataset of 5,000 patients (`scripts/01_causal_forest_no_hidden_factor.py`,
-seed 1), fitted with four chains of 2,000 draws each after 500 warm-up draws.
-True effects vary between patients with a standard deviation of 3.1 mmol/mol.
+seed 1, generator version 2), fitted with four chains of 2,000 draws each
+after 500 warm-up draws. True effects vary between patients with a standard
+deviation of 3.3 mmol/mol.
 
 | Measure | Value |
 |---|---|
-| Error in the average effect | 0.92 mmol/mol |
-| Typical error in one patient's effect | 1.48 mmol/mol |
-| 95% intervals containing the truth | 98.4% |
-| Patients sent to the worse drug | 16.5% |
+| Error in the average effect | −0.65 mmol/mol |
+| Typical error in one patient's effect | 1.67 mmol/mol |
+| 95% intervals containing the truth | 97.3% |
+| Patients sent to the worse drug | 14.5% |
 | HbA1c lowering lost per patient | 0.16 mmol/mol |
-| R-hat, worst single patient | 1.009 |
+| R-hat, worst single patient | 1.013 |
 
 This is one dataset, so these numbers will move with the seed. Even with
 nothing hidden, the forest is far from perfect on realistic patients: one in
@@ -77,8 +78,10 @@ uv sync
 uv run pytest
 uv run python scripts/01_causal_forest_no_hidden_factor.py
 uv run python scripts/02_what_the_hidden_factor_does.py
-uv run python scripts/03_causal_forest_grid.py   # several hours
+uv run python scripts/03_causal_forest_grid.py   # many hours
 ```
+
+The last command can be shared between computers. See [docs/RUNNER.md](docs/RUNNER.md).
 
 ## Layout
 
@@ -88,7 +91,11 @@ uv run python scripts/03_causal_forest_grid.py   # several hours
 - `docs/calibration.md` lists where each number in the generator comes from.
 - `tests/` checks that the generator does what it says, including that the
   simulated cohort matches the published figures.
-- `results/` holds the saved output of the long runs.
+- `docs/RUNNER.md` explains how a second computer runs part of the long jobs
+  without the results getting mixed up.
+- `results/generator-v<N>/<COMPUTER>.csv` holds the saved output of the long
+  runs: one folder per version of the generator, one file per computer.
+  Results from different versions are never pooled.
 - `scripts/` holds one numbered script per run or analysis.
 - `reports/` holds one progress report per script: the question, what was run,
   the result, how to read it and its limits. Start at [reports/README.md](reports/README.md).

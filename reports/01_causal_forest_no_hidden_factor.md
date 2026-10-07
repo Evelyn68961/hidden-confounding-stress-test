@@ -52,9 +52,39 @@ The run was repeated three times as the project changed:
 
 Run time on a laptop: about 40 seconds (A), 90 seconds (B), 5.5 minutes (C).
 
-## Reading
+## Run D: generator version 2
 
-- **Run C is the reference from here on.** The earlier runs used an easier,
+After run C, two faults were found in the calibrated patients (see
+`docs/calibration.md`): age did not change which drug is better, and the
+simulated GLP-1 group did better than the SGLT2 group where the published one
+did slightly worse. Generator version 2 fixes both by adding two features
+(drug classes ever prescribed, other current diabetes drugs), an age effect,
+and a separate noise level for each drug. Same seed, same chain settings.
+
+| Measure | Run C (generator v1) | Run D (generator v2) |
+|---|---|---|
+| True average effect, mmol/mol | −0.16 | −0.13 |
+| Spread of true effects (SD) | 3.07 | 3.31 |
+| Estimated average effect | 0.76 | −0.78 |
+| Error in the average effect | +0.92 | −0.65 |
+| Typical error in one patient's effect (RMSE) | 1.48 | 1.67 |
+| 95% intervals containing the truth | 98.4% | 97.3% |
+| Patients sent to the worse drug | 16.5% | 14.5% |
+| HbA1c lowering lost per patient, mmol/mol | 0.16 | 0.16 |
+| R-hat, worst single patient | 1.009 | 1.013 |
+| Patients with R-hat above 1.01 | 0% | 0.1% |
+
+- **Run D is the reference from here on.**
+- The error in the average effect changed sign between C and D (+0.92, then
+  −0.65). Both are within about two standard errors of zero. This points to
+  chance in a single dataset more than to a systematic lean, but the repeats
+  in the next step are what settle it.
+- Five of 5,000 patients have an R-hat just above 1.01 (worst 1.013). The
+  chain settings were left as they are.
+
+## Reading (runs A to C)
+
+- **Run C was the reference until run D replaced it.** The earlier runs used an easier,
   less realistic set of patients.
 - **With realistic patients the forest is noticeably less accurate, even with
   nothing hidden.** Its typical error per patient is 1.48 mmol/mol against a

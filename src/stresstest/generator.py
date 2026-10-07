@@ -29,16 +29,26 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
+# Raised whenever a change to this file changes the simulated patients.
+# Results from different versions are kept in separate folders and never pooled.
+#   1: five features (age, sex, HbA1c, BMI, eGFR)
+#   2: adds age to the drug effect, two "earlier drugs" features, and a
+#      separate noise level for each drug, so both drug groups match the paper
+GENERATOR_VERSION = 2
+
 SHAPES = ("linear", "threshold", "effect")
 
 # Typical patient, used as the reference point in the formulas below.
-AGE, HBA1C, BMI, EGFR = 58, 77, 34.6, 94
+AGE, HBA1C, BMI, EGFR, DRUG_CLASSES, OTHER_DRUGS = 58, 77, 34.6, 94, 3.5, 1.6
 
 # What one unit of `strength` means.
 LOG_ODDS_PER_UNIT = 1.0  # shift in the log-odds of getting the GLP-1 drug, per SD of the hidden factor
 HBA1C_PER_UNIT = 5.0  # shift in the outcome (mmol/mol), per SD of the hidden factor
 
-NOISE_SD = 12.5  # unexplained variation in HbA1c change (mmol/mol)
+# Unexplained variation in HbA1c change (mmol/mol). Larger on the GLP-1 drug,
+# as in the published cohort.
+NOISE_SD_SGLT2 = 12.6
+NOISE_SD_GLP1 = 15.4
 
 
 @dataclass
@@ -62,15 +72,18 @@ def true_effect(features: pd.DataFrame) -> np.ndarray:
     """Difference in HbA1c change, GLP-1 minus SGLT2, for each patient.
 
     Negative means the GLP-1 drug lowers HbA1c more for that patient.
-    Women do better on the GLP-1 drug. A higher starting HbA1c, better kidney
-    function and a higher BMI each favour the SGLT2 drug.
+    Women and older patients do better on the GLP-1 drug. More other diabetes
+    drugs, a higher starting HbA1c, better kidney function and a higher BMI
+    each favour the SGLT2 drug.
     """
     return (
-        1.7
+        1.67
         - 4.4 * features["female"]
+        - 0.12 * (features["age"] - AGE)
+        + 1.5 * (features["other_drugs"] - OTHER_DRUGS)
         + 0.08 * (features["hba1c"] - HBA1C)
-        + 0.08 * (features["egfr"] - EGFR)
-        + 0.15 * (features["bmi"] - BMI)
+        + 0.05 * (features["egfr"] - EGFR)
+        + 0.10 * (features["bmi"] - BMI)
     ).to_numpy()
 
 
@@ -78,11 +91,13 @@ def baseline_response(features: pd.DataFrame) -> np.ndarray:
     """HbA1c change on the SGLT2 drug, before noise and the hidden factor.
 
     A higher starting HbA1c falls further. Older patients respond a little more.
+    Patients who have already been through more drug classes respond less.
     """
     return (
         -12.0
         - 0.5 * (features["hba1c"] - HBA1C)
         - 0.05 * (features["age"] - AGE)
+        + 2.45 * (features["drug_classes"] - DRUG_CLASSES)
     ).to_numpy()
 
 
@@ -115,30 +130,39 @@ def make_patients(n: int, strength: float, shape: str = "linear", seed: int = 0)
             "hba1c": 53 + rng.gamma(shape=2.0, scale=12.0, size=n),  # mmol/mol at the start
             "bmi": rng.normal(BMI, 7, n).clip(18, 65),
             "egfr": rng.normal(EGFR, 17, n).clip(30, 140),
+            # Diabetes drug classes ever prescribed (5 means five or more).
+            "drug_classes": rng.choice([2, 3, 4, 5], n, p=[0.192, 0.288, 0.319, 0.201]),
+            # Other diabetes drugs being taken now (4 means four or more).
+            "other_drugs": rng.choice([0, 1, 2, 3, 4], n, p=[0.056, 0.392, 0.427, 0.121, 0.004]),
         }
     )
     hidden = rng.normal(0, 1, n)
 
     # Drug choice. About one patient in four gets the GLP-1 drug. Women, heavier
-    # patients and patients with a higher HbA1c get it more often; patients with
-    # good kidney function get it less often. The hidden factor pushes towards it.
+    # patients, patients with a higher HbA1c and patients who have been through
+    # more drugs get it more often; older patients and patients with good kidney
+    # function get it less often. The hidden factor pushes towards it.
     log_odds = (
-        -1.3
+        -1.35
         + 0.31 * features["female"]
         + 0.073 * (features["bmi"] - BMI)
         - 0.009 * (features["egfr"] - EGFR)
         + 0.006 * (features["hba1c"] - HBA1C)
+        - 0.006 * (features["age"] - AGE)
+        + 0.42 * (features["drug_classes"] - DRUG_CLASSES)
+        + 0.20 * (features["other_drugs"] - OTHER_DRUGS)
         + strength * LOG_ODDS_PER_UNIT * hidden
     ).to_numpy()
     propensity = 1 / (1 + np.exp(-log_odds))
     treated = rng.binomial(1, propensity)
 
     effect = true_effect(features)
+    noise_sd = np.where(treated == 1, NOISE_SD_GLP1, NOISE_SD_SGLT2)
     outcome = (
         baseline_response(features)
         + effect * treated
         + hidden_effect_on_outcome(hidden, treated, strength, shape)
-        + rng.normal(0, NOISE_SD, n)
+        + rng.normal(0, 1, n) * noise_sd
     )
 
     return Patients(

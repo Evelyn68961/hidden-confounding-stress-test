@@ -2,9 +2,9 @@
 
 **Date:** 2026-10-07
 **Script:** `scripts/02_what_the_hidden_factor_does.py`
-**Generator:** calibrated version (see `docs/calibration.md`). An earlier
-version of this report used the first, hand-picked generator; the pattern was
-the same and the numbers slightly different.
+**Generator:** version 2 (see `docs/calibration.md`). Earlier versions of this
+report used the hand-picked generator and then generator version 1. The
+pattern was the same each time and the numbers slightly different.
 
 ## Question
 
@@ -51,21 +51,21 @@ is subtracted so that the last column shows the hidden factor alone.
 | Shape | Strength | GLP-1 group in the top 16% of the hidden factor | SGLT2 group in the top 16% | Outcome variance from the hidden factor | Extra error of the crude comparison |
 |---|---|---|---|---|---|
 | linear | 0 | 16% | 16% | 0.0% | 0.00 mmol/mol |
-| linear | 0.5 | 25% | 13% | 2.6% | 1.19 mmol/mol |
-| linear | 1 | 32% | 9% | 9.8% | 4.11 mmol/mol |
+| linear | 0.5 | 24% | 13% | 2.7% | 1.09 mmol/mol |
+| linear | 1 | 32% | 10% | 9.7% | 3.93 mmol/mol |
 | threshold | 0 | 16% | 16% | 0.0% | 0.00 mmol/mol |
-| threshold | 0.5 | 25% | 13% | 2.6% | 0.89 mmol/mol |
-| threshold | 1 | 32% | 9% | 9.7% | 3.22 mmol/mol |
+| threshold | 0.5 | 24% | 13% | 2.6% | 0.80 mmol/mol |
+| threshold | 1 | 32% | 10% | 9.6% | 3.05 mmol/mol |
 | effect | 0 | 16% | 16% | 0.0% | 0.00 mmol/mol |
-| effect | 0.5 | 25% | 13% | 0.6% | 0.90 mmol/mol |
-| effect | 1 | 32% | 9% | 2.8% | 2.98 mmol/mol |
+| effect | 0.5 | 24% | 13% | 0.9% | 0.80 mmol/mol |
+| effect | 1 | 32% | 10% | 3.7% | 2.83 mmol/mol |
 
 ## Reading
 
 - **A small share of the outcome, a large error.** At strength 1 the hidden
   factor explains under 10% of the variation in the outcome, yet it shifts the
   crude comparison by about 4 mmol/mol. The true average effect is close to
-  zero and true effects vary with an SD of 3.1.
+  zero and true effects vary with an SD of 3.3.
 - **The error grows faster than the strength.** Doubling the strength more
   than triples the error, because strength scales both links.
 - **Same variance, different error.** `linear` and `threshold` add the same
