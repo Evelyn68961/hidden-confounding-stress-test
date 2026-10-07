@@ -3,7 +3,7 @@
 A small simulation that asks: how wrong does a treatment selection model get
 when something that drives the choice of drug is missing from the records?
 
-**Status: in progress.** Step 1 of 4 is done and step 2 is running. Nothing here is a finished result.
+**Status: in progress.** Steps 1 and 2 of 4 are done. Nothing here is a finished result.
 
 ## The problem
 
@@ -43,7 +43,7 @@ number, its source and how closely the simulation reproduces it are in
 | Step | Content | State |
 |---|---|---|
 | 1 | Patient generator; Bayesian causal forest with the hidden factor off; what each setting of the hidden factor does to the data | Done ([report 01](reports/01_causal_forest_no_hidden_factor.md), [report 02](reports/02_what_the_hidden_factor_does.md)) |
-| 2 | Causal forest with the hidden factor on: two strengths, three shapes, 20 datasets each | Running |
+| 2 | Causal forest with the hidden factor on: two strengths, three shapes, 20 datasets each | Done ([report 03](reports/03_causal_forest_grid.md); cross-computer check in [report 04](reports/04_cross_computer_check.md)) |
 | 3 | Joint model of drug choice and outcome in PyMC | Not started |
 | 4 | Figures and write-up | Not started |
 
@@ -69,6 +69,39 @@ four gets the GLP-1 drug and the outcome is noisy. Whether the error in the
 average effect is chance or a systematic lean is settled by the repeats in
 step 2.
 
+### Step 2: the hidden factor switched on
+
+140 simulated datasets of 5,000 patients, 20 per setting. Averages across
+datasets; errors in mmol/mol of HbA1c. Full table, checks and limits are in
+[report 03](reports/03_causal_forest_grid.md).
+
+| Hidden factor | Error in the average effect | Typical error per patient | 95% intervals containing the truth | Patients sent to the worse drug |
+|---|---|---|---|---|
+| Off | 0.12 | 1.82 | 94.3% | 16.5% |
+| Linear, strength 0.5 | 1.39 | 2.21 | 87.3% | 21.2% |
+| Linear, strength 1 | 4.44 | 4.80 | 27.6% | 43.2% |
+| Threshold, strength 0.5 | 1.06 | 2.03 | 90.5% | 19.2% |
+| Threshold, strength 1 | 3.52 | 3.97 | 45.7% | 37.2% |
+| Effect, strength 0.5 | 1.06 | 2.05 | 90.1% | 19.3% |
+| Effect, strength 1 | 3.18 | 3.70 | 49.8% | 34.2% |
+
+![Step 2 figure](reports/figures/step2_causal_forest.png)
+
+- With nothing hidden, the forest has no systematic lean and its intervals are
+  close to honest, but at this sample size it still sends one patient in six
+  to the worse drug.
+- It removes the confounding it can see and none that it cannot: with the
+  hidden factor on, its error in the average effect matches that of a crude
+  comparison of the two drug groups.
+- A strong hidden factor sends 34% to 43% of patients to the worse drug, and
+  only 28% to 50% of the 95% intervals then contain the truth. Nothing in the
+  model's output signals the problem.
+- The form of the hidden factor matters at the same strength.
+
+These are results from a simulation whose patients match printed summary
+figures from one paper. Strength 0.5 is a hidden factor about as strong on
+drug choice as BMI; strength 1 is twice that.
+
 ## Run it
 
 Requires [uv](https://docs.astral.sh/uv/).
@@ -79,6 +112,8 @@ uv run pytest
 uv run python scripts/01_causal_forest_no_hidden_factor.py
 uv run python scripts/02_what_the_hidden_factor_does.py
 uv run python scripts/03_causal_forest_grid.py   # many hours
+uv run python scripts/04_cross_check.py compare
+uv run python scripts/05_summarise_grid.py
 ```
 
 The last command can be shared between computers. See [docs/RUNNER.md](docs/RUNNER.md).
