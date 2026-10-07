@@ -73,8 +73,10 @@ is subtracted so that the last column shows the hidden factor alone.
   `threshold`. The form of the confounding matters, not only its size.
 - **`effect` is a different kind of problem.** The drug works less well in the
   patients who were selected for it, so the effect among treated patients
-  differs from the effect across all patients. This is sometimes called
-  essential heterogeneity.
+  differs from the effect across all patients. This is called essential
+  heterogeneity. Brooks et al. (*BMC Med Res Methodol* 2024;24:66) found that
+  under it a generalized random forest recovered true effects only for treated
+  patients. They did not test Bayesian causal forests.
 
 ## Limits
 
