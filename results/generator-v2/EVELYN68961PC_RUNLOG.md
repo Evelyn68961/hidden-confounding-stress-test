@@ -53,6 +53,35 @@ Times are local to this computer (UTC+08:00).
 | 2026-10-07 22:10 | Fits 16 to 18 of 19 finished (repeat 12: threshold 0.5, threshold 1.0, effect 0.5), in 3,898 s, 3,900 s and 3,871 s. |
 | 2026-10-07 22:12 | Hourly commit: 20 fits saved in total. One fit left (repeat 12, effect 1.0), now running alone. Free memory 8.9 GB. No error or warning. |
 
+| 2026-10-07 22:20 | The lead cancelled this computer's refit of repeat 0. See "Refit cancelled" below. |
+
+| 2026-10-07 22:38 | Fit 19 of 19 finished (repeat 12, effect 1.0) in 1,732 s, about 29 minutes. It ran alone, which shows that a fit takes about half as long on this computer when no other fit runs beside it. The script printed `finished`. |
+| 2026-10-07 22:40 | Final commit. The results file has 21 rows: seven settings for each of repeats 10, 11 and 12, with no setting missing and none repeated. No Python process is left running. |
+
+## Summary of this computer's part
+
+- Fits saved: 21 (repeats 10, 11 and 12). Two record code commit b468ead (first start); nineteen record bf0b09f (restart).
+- Time: first start 15:02, restart 16:05, finished 22:38 on 2026-10-07. About 7.5 hours in all.
+- Time per fit: about 46 minutes with two workers, 56 to 65 minutes with three, 29 minutes alone.
+- Errors, warnings and crashes: none. One planned stop and restart, on the lead's decision.
+- Lost work: two fits that were about 16 minutes in when the first run was stopped. Both were run again after the restart.
+- Cross-checks: fingerprints 14 of 14 identical; the lead's refit of repeat 10 identical on all three settings; this computer's refit cancelled by the lead.
+- The clone in `C:\Git\hidden-confounding-stress-test` is left in place, as the lead asked.
+
+## Refit cancelled by the lead (2026-10-07 22:20)
+
+- `uv run python scripts/04_cross_check.py refit --repeat 0` was not run on this computer.
+- Reason given by the lead: the lead's computer refitted three of this computer's datasets (repeat 10) and every score matched this computer's own results to within 0.000000001. A refit in the other direction would test the same pair of computers and the same code on a different dataset, at a cost of about two and a half hours here, and would add no information.
+- The three comparisons reported by the lead (`scripts/04_cross_check.py compare`):
+
+| Setting, repeat 10 | rmse, both computers | wrong drug, both computers | Result |
+|---|---|---|---|
+| none, strength 0.0 | 1.5477 | 0.1360 | identical |
+| linear, strength 1.0 | 5.6914 | 0.4592 | identical |
+| effect, strength 1.0 | 4.4340 | 0.3868 | identical |
+
+- This computer therefore has no `EVELYN68961PC_refits.csv` file.
+
 ## Restart (2026-10-07 16:05)
 
 - New command: `uv run python scripts/03_causal_forest_grid.py --repeats 10-12 --workers 3`
