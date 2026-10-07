@@ -66,8 +66,9 @@ across patients.
 
 | Setting | Value | Note |
 |---|---|---|
-| Effect of eGFR on which drug is better | 0.08 per unit, favouring the SGLT2 drug | The paper's summary describes lower eGFR as favouring the GLP-1 drug, but gives no size. The value was picked together with the BMI and HbA1c slopes to match the percentages above. |
-| Effect of BMI on which drug is better | 0.15 per unit, favouring the SGLT2 drug | As for eGFR. The direction was read from the paper's summary of its Figure 3 and was not confirmed against a quoted sentence. |
+| Effect of eGFR on which drug is better | 0.08 per unit, favouring the SGLT2 drug | Direction from the paper: those with a greater predicted benefit on the GLP-1 drug were "predominantly female and older, with lower baseline HbA1c, eGFR and BMI". No size is given. The value was picked together with the BMI and HbA1c slopes to match the percentages above. |
+| Effect of BMI on which drug is better | 0.15 per unit, favouring the SGLT2 drug | As for eGFR. In the paper's Table 2, BMI is among the features predicting the difference between the drugs and not among those predicting response on the SGLT2 drug; the generator follows that. |
+| No effect of age on which drug is better | n/a | An omission. The paper reports that older patients benefit more from the GLP-1 drug and ranks age among the most influential predictors. Its most influential predictor, the number of other current glucose-lowering drugs, is not simulated at all. |
 | Slope of HbA1c change on starting HbA1c | −0.5 per mmol/mol | Chosen. |
 | Slope of HbA1c change on age | −0.05 per year | Chosen. |
 | Spread of age, BMI and eGFR overall | 11, 7, 17 | Close to the published group SDs. |
