@@ -35,7 +35,9 @@ def standardise(features):
     return (values - values.mean(axis=0)) / values.std(axis=0)
 
 
-def fit_joint_model(patients: Patients, seed: int = 0, link_errors: bool = True):
+def fit_joint_model(
+    patients: Patients, seed: int = 0, link_errors: bool = True, use_instrument: bool = False
+):
     """Fit the joint model.
 
     Returns (effect_draws, rho_draws). `effect_draws` has dimensions
@@ -44,6 +46,10 @@ def fit_joint_model(patients: Patients, seed: int = 0, link_errors: bool = True)
 
     With `link_errors=False`, rho is fixed at 0. The model is then an ordinary
     regression with interactions, which serves as the comparison.
+
+    With `use_instrument=True`, the instrument enters the drug-choice part and
+    is left out of the outcome part. That exclusion is what lets the model
+    tell a hidden factor from a real drug effect.
     """
     x = standardise(patients.features)
     n_features = x.shape[1]
@@ -77,6 +83,9 @@ def fit_joint_model(patients: Patients, seed: int = 0, link_errors: bool = True)
 
         # Given a patient's outcome error, the chance of the GLP-1 drug shifts by rho.
         choice = choice_level + pt.dot(x, choice_slopes)
+        if use_instrument:
+            instrument_slope = pm.Normal("instrument_slope", 0, 1)
+            choice = choice + instrument_slope * patients.instrument
         shifted = (choice + rho * residual) / pt.sqrt(1 - rho**2)
         chance = pm.math.invprobit(shifted)
         pm.Bernoulli("drug", p=pt.clip(chance, 1e-9, 1 - 1e-9), observed=treated)

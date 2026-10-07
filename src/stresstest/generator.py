@@ -66,6 +66,11 @@ class Patients:
     true_effect: np.ndarray  # GLP-1 minus SGLT2, given the recorded features
     true_propensity: np.ndarray  # chance of getting the GLP-1 drug, hidden factor included
     hidden: np.ndarray
+    # An instrument: something that moves drug choice and affects the outcome in
+    # no other way (think of a practice's prescribing habit). All zeros unless
+    # `instrument_strength` is set. It is recorded, but kept apart from
+    # `features` because a model must treat it differently.
+    instrument: np.ndarray | None = None
 
 
 def true_effect(features: pd.DataFrame) -> np.ndarray:
@@ -119,9 +124,23 @@ def hidden_effect_on_outcome(hidden, treated, strength, shape):
     raise ValueError(f"shape must be one of {SHAPES}, got {shape!r}")
 
 
-def make_patients(n: int, strength: float, shape: str = "linear", seed: int = 0) -> Patients:
-    """Simulate `n` patients."""
+def make_patients(
+    n: int,
+    strength: float,
+    shape: str = "linear",
+    seed: int = 0,
+    instrument_strength: float = 0.0,
+) -> Patients:
+    """Simulate `n` patients.
+
+    `instrument_strength` is the shift in the log-odds of getting the GLP-1
+    drug per SD of the instrument. At 0 (the default) there is no instrument
+    and the patients are exactly those of the earlier steps.
+    """
     rng = np.random.default_rng(seed)
+    # The instrument has its own random stream, so switching it on or off does
+    # not disturb any other simulated number.
+    instrument = np.random.default_rng([seed, 1]).normal(0, 1, n)
 
     features = pd.DataFrame(
         {
@@ -152,6 +171,7 @@ def make_patients(n: int, strength: float, shape: str = "linear", seed: int = 0)
         + 0.42 * (features["drug_classes"] - DRUG_CLASSES)
         + 0.20 * (features["other_drugs"] - OTHER_DRUGS)
         + strength * LOG_ODDS_PER_UNIT * hidden
+        + instrument_strength * instrument
     ).to_numpy()
     propensity = 1 / (1 + np.exp(-log_odds))
     treated = rng.binomial(1, propensity)
@@ -172,4 +192,5 @@ def make_patients(n: int, strength: float, shape: str = "linear", seed: int = 0)
         true_effect=effect,
         true_propensity=propensity,
         hidden=hidden,
+        instrument=instrument if instrument_strength else np.zeros(n),
     )
