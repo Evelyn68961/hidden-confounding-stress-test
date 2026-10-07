@@ -179,28 +179,26 @@ def summarise_instrument(rows):
     return table
 
 
-def draw_instrument(table, no_instrument):
-    """Share sent to the worse drug: plain model, and joint model at each instrument strength."""
-    series = [("plain", "Plain regression", BLUE)]
+def draw_instrument(table):
+    """Plain regression against the joint model at each instrument strength, same datasets."""
     strengths = sorted(table["instrument_strength"].unique())
-    colours = [ORANGE, AQUA]
+    measures = [("wrong_drug", "Patients sent to the worse drug (%)", 100, 42),
+                ("coverage_95", "95% intervals containing the truth (%)", 100, 108)]
     fig, axes = plt.subplots(2, 3, figsize=(10.5, 7.4), sharey="row", facecolor=SURFACE)
-    measures = [("wrong_drug", "Patients sent to the worse drug (%)", 100), ("coverage_95", "95% intervals containing the truth (%)", 100)]
-    for i, (measure, label, scale) in enumerate(measures):
+    for i, (measure, label, scale, top) in enumerate(measures):
+        scaled = table.assign(v=table[measure] * scale)
+        # The plain regression does not use the instrument; average it over both sets of datasets.
+        plain = scaled[scaled["model"] == "plain"].groupby(["shape", "strength"], as_index=False)["v"].mean()
+        frames = [(plain, "Plain regression (does not use the instrument)", BLUE)]
+        for strength_value, colour in zip(strengths, (ORANGE, AQUA)):
+            frames.append((scaled[(scaled["model"] == "joint") & (scaled["instrument_strength"] == strength_value)],
+                           f"Joint model, instrument strength {strength_value:g}", colour))
         for j, shape in enumerate(SHAPES):
             ax = axes[i, j]
             style(ax)
-            scaled = table.assign(value=table[measure] * scale)
-            frames = [(scaled[(scaled["model"] == "plain") & (scaled["instrument_strength"] == strengths[-1])], "Plain regression", BLUE)]
-            if no_instrument is not None:
-                base = no_instrument.assign(value=no_instrument[measure] * scale)
-                frames.append((base[base["model"] == "joint"], "Joint model, no instrument", MUTED))
-            for strength_value, colour in zip(strengths, colours):
-                frames.append((scaled[(scaled["model"] == "joint") & (scaled["instrument_strength"] == strength_value)],
-                               f"Joint model, instrument {strength_value:g}", colour))
+            ax.set_ylim(0, top)
             for frame, _, colour in frames:
-                lines_by_strength(ax, frame.rename(columns={"value": "v"}), shape, [("v", "", colour)])
-            ax.set_ylim(0, 105 if measure == "coverage_95" else None)
+                lines_by_strength(ax, frame, shape, [("v", "", colour)])
             if i == 0:
                 ax.set_title(TITLES[shape], fontsize=10.5, color=INK, loc="left")
             if i == 1:
@@ -208,11 +206,15 @@ def draw_instrument(table, no_instrument):
             if j == 0:
                 ax.set_ylabel(label, color=MUTED, fontsize=9.5)
     handles = [plt.Line2D([], [], color=c, linewidth=2, marker="o", markersize=6, label=l) for _, l, c in frames]
-    fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.055, 0.925), ncol=4, frameon=False,
+    fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.055, 0.925), ncol=3, frameon=False,
                fontsize=9.5, labelcolor=INK, handlelength=1.6, columnspacing=1.6)
+    fig.text(0.06, 0.03, "Averages over 10 simulated datasets of 5,000 patients per setting.",
+             fontsize=9, color=MUTED)
+    fig.text(0.06, 0.008, "Instrument strength 0.5 moves drug choice about as much as BMI; 1 moves it twice as much.",
+             fontsize=9, color=MUTED)
     fig.suptitle("With an instrument, a joint model can correct for a hidden factor",
                  x=0.06, y=0.975, ha="left", fontsize=13, color=INK, fontweight="bold")
-    fig.tight_layout(rect=(0.03, 0, 1, 0.885), h_pad=2.0)
+    fig.tight_layout(rect=(0.03, 0.05, 1, 0.885), h_pad=2.0)
     fig.savefig(FIGURES / "step3_instrument.png", dpi=160, facecolor=SURFACE)
     print("figure saved: reports/figures/step3_instrument.png")
 
@@ -237,4 +239,4 @@ if __name__ == "__main__":
     if instrument is not None:
         instrument_table = summarise_instrument(instrument)
         instrument_table.to_csv(TABLES / "step3_instrument.csv", index=False, float_format="%.4f")
-        draw_instrument(instrument_table, joint_table)
+        draw_instrument(instrument_table)

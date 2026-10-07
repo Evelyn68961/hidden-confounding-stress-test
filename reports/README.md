@@ -14,3 +14,6 @@ report.
 | 05 | 2026-10-07 | [Joint model: trial and check](05_joint_model_trial_and_check.md) | Does a joint model of drug choice and outcome detect the hidden factor, how long does it take, and does the code work when the task is easy? |
 | 06 | 2026-10-07 | [Joint model on all 140 datasets, no instrument](06_joint_model_grid.md) | Without an instrument, does a joint model detect a hidden factor, correct the bias, or report honest uncertainty? |
 | 07 | 2026-10-07 | [The published validation check](07_validation_check.md) | Does comparing concordant with matched discordant patients notice a model misled by a hidden factor? |
+| 08 | 2026-10-08 | [Joint model with an instrument](08_instrument.md) | Given an instrument, does the joint model correct the bias, and what does it cost? |
+
+A plain-language account of all eight reports is in [SUMMARY.md](SUMMARY.md).
