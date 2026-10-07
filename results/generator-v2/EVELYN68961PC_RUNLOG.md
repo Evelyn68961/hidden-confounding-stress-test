@@ -41,6 +41,9 @@ Times are local to this computer (UTC+08:00).
 | 2026-10-07 18:00 | Fits 4 to 6 of 19 finished (repeat 10: effect 0.5, effect 1.0; repeat 11: none 0.0), in 3,468 s, 3,470 s and 3,424 s. Repeat 10 is complete. |
 | 2026-10-07 18:06 | Hourly commit: 8 fits saved in total. Free memory 8.1 GB. No error or warning. |
 
+| 2026-10-07 18:59 | Fits 7 to 9 of 19 finished (repeat 11: threshold 0.5, linear 1.0, linear 0.5), in 3,512 s, 3,524 s and 3,536 s. |
+| 2026-10-07 19:07 | Hourly commit: 11 fits saved in total. Free memory 7.3 GB. No error or warning. |
+
 ## Restart (2026-10-07 16:05)
 
 - New command: `uv run python scripts/03_causal_forest_grid.py --repeats 10-12 --workers 3`
