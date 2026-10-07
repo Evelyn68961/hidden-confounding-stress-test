@@ -1,4 +1,4 @@
-﻿"""Step 2: how wrong does the causal forest get as the hidden factor is switched on?
+"""Step 2: how wrong does the causal forest get as the hidden factor is switched on?
 
 Fits the Bayesian causal forest to many simulated datasets:
 three strengths of the hidden factor, three shapes, 20 datasets per setting.

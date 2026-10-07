@@ -1,4 +1,4 @@
-﻿# Hidden-confounding stress test
+# Hidden-confounding stress test
 
 A small simulation that asks: how wrong does a treatment selection model get
 when something that drives the choice of drug is missing from the records?
@@ -97,4 +97,4 @@ uv run python scripts/03_causal_forest_grid.py   # several hours
 
 Hahn PR, Murray JS, Carvalho CM. Bayesian regression tree models for causal
 inference: regularization, confounding, and heterogeneous effects. *Bayesian
-Analysis* 2020;15(3):965??056.
+Analysis* 2020;15(3):965–1056.

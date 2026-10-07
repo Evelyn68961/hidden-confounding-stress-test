@@ -1,4 +1,4 @@
-﻿# Progress reports
+# Progress reports
 
 One report for each run or analysis, in the order the work was done. Each
 report states the question, what was run, the result, how to read it, and its
