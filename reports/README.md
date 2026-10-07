@@ -11,3 +11,4 @@ report.
 | 02 | 2026-10-07 | [What the hidden factor does](02_what_the_hidden_factor_does.md) | What does each strength and shape of the hidden factor do to the data? |
 | 03 | 2026-10-07 | [Causal forest, hidden factor on](03_causal_forest_grid.md) | How wrong does the forest get as the hidden factor gets stronger, and does its form matter? (140 fits) |
 | 04 | 2026-10-07 | [Do the two computers agree?](04_cross_computer_check.md) | The fits were shared between two computers. Do they simulate the same patients and give the same answers? |
+| 05 | 2026-10-07 | [Joint model: trial and check](05_joint_model_trial_and_check.md) | Does a joint model of drug choice and outcome detect the hidden factor, how long does it take, and does the code work when the task is easy? |
