@@ -31,7 +31,16 @@ Times are local to this computer (UTC+08:00).
 | 2026-10-07 15:01 | Fingerprints and this log committed and pushed (commit b468ead). |
 | 2026-10-07 15:02 | Long run started. First line printed: `generator v2, code b468ead, computer EVELYN68961PC, repeats 10-19: 70 fits to run -> EVELYN68961PC.csv` |
 | 2026-10-07 15:48 | Fits 1 and 2 of 70 finished (repeat 10: none 0.0, linear 0.5). They took 2,757 s and 2,774 s, about 46 minutes each. |
-| 2026-10-07 16:05 | Hourly commit: 2 fits saved. Run continuing. |
+| 2026-10-07 16:03 | Hourly commit: 2 fits saved (commit bf0b09f). Slow speed reported to the lead and to Evelyn; see "Unusual" below. |
+| 2026-10-07 16:04 | Run stopped on the lead's decision (processes ended with `taskkill`). The two fits in progress, repeat 10 threshold 0.5 and threshold 1.0, were about 16 minutes in and are lost. The two saved rows are intact. |
+| 2026-10-07 16:05 | Run restarted with the new command below. First line printed: `generator v2, code bf0b09f, computer EVELYN68961PC, repeats 10-12: 19 fits to run -> EVELYN68961PC.csv` |
+
+## Restart (2026-10-07 16:05)
+
+- New command: `uv run python scripts/03_causal_forest_grid.py --repeats 10-12 --workers 3`
+- Reason: a fit takes about 46 minutes on this computer against about 13 minutes on the lead's with four workers. The lead moved repeats 13 to 19 to its own computer so that both finish at about the same time. This computer must not run anything in repeats 13 to 19.
+- Three workers because 8.2 GB of memory was free after the stop, and each worker holds about 2.2 GB. If free memory falls below about 1 GB, the lead's instruction is to stop and restart with two workers.
+- Rows from the first start record code commit b468ead. Rows from the restart record bf0b09f. The two commits differ only by this computer's own result files.
 
 ## Unusual: fits are about eight times slower than on the lead's computer
 
@@ -40,4 +49,4 @@ Times are local to this computer (UTC+08:00).
 - Each worker holds about 2.2 GB of memory. Free memory with two workers running: 4.0 GB.
 - No error, no warning, no restart. Nothing was changed.
 - At this speed, 70 fits with two workers take about 27 hours, ending around 18:00 on 2026-10-08.
-- Reported to the lead and to Evelyn at 16:05. Waiting for the lead's decision on whether to keep this range, shorten it, or change the number of workers.
+- Reported to the lead and to Evelyn at 16:03. The lead decided to shorten this computer's range; see "Restart".
