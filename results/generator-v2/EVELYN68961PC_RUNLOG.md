@@ -28,4 +28,16 @@ Times are local to this computer (UTC+08:00).
 
 | Time | Event |
 |---|---|
-| 2026-10-07 15:01 | Fingerprints and this log committed and pushed. Long run about to start. |
+| 2026-10-07 15:01 | Fingerprints and this log committed and pushed (commit b468ead). |
+| 2026-10-07 15:02 | Long run started. First line printed: `generator v2, code b468ead, computer EVELYN68961PC, repeats 10-19: 70 fits to run -> EVELYN68961PC.csv` |
+| 2026-10-07 15:48 | Fits 1 and 2 of 70 finished (repeat 10: none 0.0, linear 0.5). They took 2,757 s and 2,774 s, about 46 minutes each. |
+| 2026-10-07 16:05 | Hourly commit: 2 fits saved. Run continuing. |
+
+## Unusual: fits are about eight times slower than on the lead's computer
+
+- Each fit takes about 46 minutes here. `docs/RUNNER.md` expects 5 to 15 minutes, and the lead reports about 5.5 minutes.
+- Measured at 16:03: each worker process had used 3,585 s of processor time in about 3,600 s of running, so each fit uses one core fully and no more. Total processor load was about 30% of 8 threads. The processor was running at 64% of its maximum frequency under the "ASUS Recommended" power plan.
+- Each worker holds about 2.2 GB of memory. Free memory with two workers running: 4.0 GB.
+- No error, no warning, no restart. Nothing was changed.
+- At this speed, 70 fits with two workers take about 27 hours, ending around 18:00 on 2026-10-08.
+- Reported to the lead and to Evelyn at 16:05. Waiting for the lead's decision on whether to keep this range, shorten it, or change the number of workers.
