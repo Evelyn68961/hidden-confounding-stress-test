@@ -47,20 +47,29 @@ findings but were not estimated from patient data.
 
 ### Step 1: nothing hidden
 
-One run of 5,000 patients (`scripts/01_causal_forest_no_hidden_factor.py`, seed 1).
+One simulated dataset of 5,000 patients (`scripts/01_causal_forest_no_hidden_factor.py`,
+seed 1), fitted with four chains of 500 draws each after 200 warm-up draws.
 True effects vary between patients with a standard deviation of 2.7 mmol/mol.
 
 | Measure | Value |
 |---|---|
-| Error in the average effect | 0.14 mmol/mol |
-| Typical error in one patient's effect | 0.80 mmol/mol |
-| 95% intervals containing the truth | 99.7% |
-| Patients sent to the worse drug | 5.7% |
+| Error in the average effect | 0.13 mmol/mol |
+| Typical error in one patient's effect | 0.78 mmol/mol |
+| 95% intervals containing the truth | 99.6% |
+| Patients sent to the worse drug | 5.5% |
 | HbA1c lowering lost per patient | 0.02 mmol/mol |
 
-This is a single run, so these numbers will move with the seed. The intervals
+| Do the chains agree? | Value |
+|---|---|
+| R-hat, average effect | 1.002 |
+| R-hat, worst single patient | 1.050 |
+| Patients with R-hat above 1.01 | 18% |
+
+This is one dataset, so these numbers will move with the seed. The intervals
 contain the truth more often than 95%, which means they are wider than needed
-here.
+here. The chains agree on the average effect. For individual patients they
+agree less closely: about one in five has an R-hat above the strict 1.01 limit,
+though none is above 1.05.
 
 ## Run it
 
