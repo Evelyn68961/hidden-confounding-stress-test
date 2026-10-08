@@ -1,15 +1,33 @@
 # Hidden-confounding stress test
 
+[![tests](https://github.com/Evelyn68961/hidden-confounding-stress-test/actions/workflows/tests.yml/badge.svg)](https://github.com/Evelyn68961/hidden-confounding-stress-test/actions/workflows/tests.yml)
+
 A simulation that asks: how wrong does a treatment selection model get when
 something that drives the choice of drug is missing from the records, can a
 joint model of drug choice and outcome correct for it, and would the usual
 validation check notice?
+
+**Author:** Evelyn Chang. Built with an AI coding assistant; see
+[How this was built](#how-this-was-built).
 
 **Status:** the four planned steps are done. A plain-language account of the
 findings is in [reports/SUMMARY.md](reports/SUMMARY.md).
 
 This is a learning exercise in Python, Bayesian causal forests and PyMC. It
 uses simulated patients only. It is not a verdict on any published model.
+
+## Findings at a glance
+
+- **With nothing hidden, a Bayesian causal forest recovers the truth.** Its
+  95% intervals contain the true effect for 94.3% of patients.
+- **A hidden factor passes straight through it.** At the severe setting the
+  forest's error in the average effect is 4.44 mmol/mol, against 4.40 for a
+  comparison of the two drug groups with no adjustment, and its intervals
+  contain the truth for 28% of patients.
+- **A joint model without an instrument does not detect the hidden factor**
+  in any of 140 fits. Its intervals widen, but the bias stays.
+- **With a strong instrument it removes 40% to 75% of the error**, depending
+  on the form of the hidden factor.
 
 ## The problem
 
@@ -112,24 +130,18 @@ are from 10 datasets each with one, where the plain regression's error was
 
 ### The validation check ([report 07](reports/07_validation_check.md))
 
-Treatment selection models are validated by comparing patients who received
-the recommended drug with matched patients who did not. The check passes when
-the observed benefit matches the predicted one.
+Treatment selection models are validated in health records by comparing
+patients who received the recommended drug with matched patients who did not.
+That check was also applied here, where the truth is known. The numbers, the
+figure and the reading are in [report 07](reports/07_validation_check.md).
 
-| Hidden factor | Model checked | Predicted benefit | Observed benefit | True benefit |
-|---|---|---|---|---|
-| Off | Plain regression | 2.66 | 2.76 | 2.32 |
-| Linear, strength 1 | Plain regression | 4.82 | 4.93 | 0.70 |
-| Off | A model that is exactly right | 2.53 | 2.61 | 2.53 |
-| Linear, strength 1 | A model that is exactly right | 2.53 | 4.36 | 2.53 |
+Two limits apply to that report before anything else:
 
-![Step 3 validation figure](reports/figures/step3_validation_check.png)
-
-- With nothing hidden, the check works.
-- With a hidden factor, it agrees with the misled model and disagrees with the
-  correct one. The model and the check are distorted by the same thing.
-- The published models were also validated in randomised trials, where this
-  cannot happen. The simulation has no trial arm.
+- The matching was written from the description in the published papers, not
+  from the authors' code, and may differ from theirs.
+- The published models were also validated in randomised trials, where a
+  hidden factor cannot drive the choice of drug. The simulation has no trial
+  arm.
 
 ## Limits
 
@@ -162,6 +174,10 @@ uv run python scripts/10_instrument_grid.py        # about 2.5 hours
 uv run python scripts/11_summarise_step3.py
 ```
 
+To check the reported numbers without refitting anything, run only the tests
+and scripts 05 and 11. They rebuild the tables and figures from the saved
+results.
+
 The long runs save each result as it finishes and continue where they stopped
 if run again. Script 03 can be shared between computers; see
 [docs/RUNNER.md](docs/RUNNER.md).
@@ -184,16 +200,27 @@ if run again. Script 03 can be shared between computers; see
   [reports/README.md](reports/README.md) or [reports/SUMMARY.md](reports/SUMMARY.md).
 - `results/generator-v<N>/` holds the saved output of the long runs: one
   folder per version of the generator, one file per computer. Results from
-  different versions are never pooled.
+  different versions are never pooled. The files and their columns are
+  described in [results/README.md](results/README.md).
 
 ## How this was built
 
-<!-- DRAFT for the author to review before the repository is made public. -->
-
 The code, reports and figures were written with an AI coding assistant
-(Claude), as the commit history shows.
+(Claude Code), as the commit history shows. The author chose the question,
+decided the design in discussion with the assistant, and reviewed each result
+before the next step.
 
-*[The author's own account of their role goes here.]*
+- **Checks that changed the work.** The first version of the simulated
+  patients did not reproduce the published outcome in both drug groups. It was
+  replaced, and its results are kept apart in `results/generator-v1/` and used
+  nowhere. The first forest fits ran one chain; all reported fits run four.
+- **Two computers.** The long runs were shared between two computers, each
+  operated by an assistant session. The reports and logs call them the lead
+  and the runner. [Report 04](reports/04_cross_computer_check.md) shows they
+  simulate the same patients and give the same scores.
+- **What is reproducible.** Every result row records the commit of the code
+  that produced it. The two summary scripts rebuild every table and figure in
+  `reports/` from the saved results in a few seconds.
 
 ## References
 

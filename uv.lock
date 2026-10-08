@@ -1063,6 +1063,7 @@ dependencies = [
     { name = "numpy" },
     { name = "pandas" },
     { name = "pymc" },
+    { name = "scikit-learn" },
     { name = "stochtree" },
 ]
 
@@ -1078,6 +1079,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.5.3" },
     { name = "pandas", specifier = ">=3.0.6" },
     { name = "pymc", specifier = ">=6.3.2" },
+    { name = "scikit-learn", specifier = ">=1.9.1" },
     { name = "stochtree", specifier = ">=0.4.5" },
 ]
 

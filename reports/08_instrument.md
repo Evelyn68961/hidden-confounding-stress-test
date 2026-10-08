@@ -155,8 +155,8 @@ How often the joint model's 95% interval for rho excluded zero:
   argued for and may be weaker or imperfect.
 - **One simple joint model:** normal errors, a probit choice model, straight
   lines, one noise level. Conley et al. replace the normal errors with a
-  Dirichlet process mixture; the PhD project this exercise relates to proposes
-  flexible models of that kind. They were not implemented here, so nothing
+  Dirichlet process mixture. Flexible models of that kind were not
+  implemented here, so nothing
   here shows what they would achieve under the threshold or effect shapes.
 - **Both models are given the right form for the effects** (straight lines),
   which a model would not know in practice.

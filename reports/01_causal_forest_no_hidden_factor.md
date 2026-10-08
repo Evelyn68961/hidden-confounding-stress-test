@@ -78,7 +78,9 @@ and a separate noise level for each drug. Same seed, same chain settings.
 - The error in the average effect changed sign between C and D (+0.92, then
   −0.65). Both are within about two standard errors of zero. This points to
   chance in a single dataset more than to a systematic lean, but the repeats
-  in the next step are what settle it.
+  in the next step are what settle it (they did: see
+  [report 03](03_causal_forest_grid.md), where the average over 20 datasets
+  is 0.12).
 - Five of 5,000 patients have an R-hat just above 1.01 (worst 1.013). The
   chain settings were left as they are.
 
