@@ -130,17 +130,34 @@ def make_patients(
     shape: str = "linear",
     seed: int = 0,
     instrument_strength: float = 0.0,
+    instrument_groups: int = 0,
+    instrument_flaw: float = 0.0,
 ) -> Patients:
     """Simulate `n` patients.
 
     `instrument_strength` is the shift in the log-odds of getting the GLP-1
     drug per SD of the instrument. At 0 (the default) there is no instrument
     and the patients are exactly those of the earlier steps.
+
+    Two options make the instrument less ideal. Both are off by default.
+
+    `instrument_groups`: with a number above 0, patients are spread at random
+    over that many practices and the instrument is one value per practice,
+    like a practice's prescribing habit. With 0 it is one value per patient.
+
+    `instrument_flaw`: a direct effect of the instrument on the outcome, in
+    mmol/mol per SD of the instrument. Anything other than 0 breaks the rule
+    that an instrument affects the outcome only through the choice of drug.
     """
     rng = np.random.default_rng(seed)
     # The instrument has its own random stream, so switching it on or off does
     # not disturb any other simulated number.
-    instrument = np.random.default_rng([seed, 1]).normal(0, 1, n)
+    instrument_rng = np.random.default_rng([seed, 1])
+    if instrument_groups:
+        practice = instrument_rng.integers(0, instrument_groups, n)
+        instrument = instrument_rng.normal(0, 1, instrument_groups)[practice]
+    else:
+        instrument = instrument_rng.normal(0, 1, n)
 
     features = pd.DataFrame(
         {
@@ -184,6 +201,8 @@ def make_patients(
         + hidden_effect_on_outcome(hidden, treated, strength, shape)
         + rng.normal(0, 1, n) * noise_sd
     )
+    if instrument_strength:
+        outcome = outcome + instrument_flaw * instrument
 
     return Patients(
         features=features,

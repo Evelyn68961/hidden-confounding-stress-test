@@ -36,7 +36,11 @@ def standardise(features):
 
 
 def fit_joint_model(
-    patients: Patients, seed: int = 0, link_errors: bool = True, use_instrument: bool = False
+    patients: Patients,
+    seed: int = 0,
+    link_errors: bool = True,
+    use_instrument: bool = False,
+    instrument_as_feature: bool = False,
 ):
     """Fit the joint model.
 
@@ -50,8 +54,15 @@ def fit_joint_model(
     With `use_instrument=True`, the instrument enters the drug-choice part and
     is left out of the outcome part. That exclusion is what lets the model
     tell a hidden factor from a real drug effect.
+
+    With `instrument_as_feature=True`, the instrument is instead treated like
+    any recorded feature: it enters the outcome part and the choice part. This
+    is the mistake of using an instrument as an ordinary predictor.
     """
-    x = standardise(patients.features)
+    features = patients.features
+    if instrument_as_feature:
+        features = features.assign(instrument=patients.instrument)
+    x = standardise(features)
     n_features = x.shape[1]
     y_centre, y_scale = patients.outcome.mean(), patients.outcome.std()
     y = (patients.outcome - y_centre) / y_scale

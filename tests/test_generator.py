@@ -125,3 +125,22 @@ def test_unknown_shape_is_rejected():
     assert "effect" in SHAPES
     with pytest.raises(ValueError):
         make_patients(100, strength=1.0, shape="curved")
+
+
+def test_a_practice_level_instrument_has_one_value_per_practice():
+    patients = make_patients(5000, 1.0, seed=3, instrument_strength=1.0, instrument_groups=25)
+    assert len(np.unique(patients.instrument)) == 25
+
+
+def test_the_instrument_options_change_nothing_else():
+    """The less ideal instruments leave every other simulated number alone."""
+    ideal = make_patients(2000, 1.0, seed=3, instrument_strength=1.0)
+    flawed = make_patients(2000, 1.0, seed=3, instrument_strength=1.0, instrument_flaw=1.5)
+    assert np.array_equal(ideal.treated, flawed.treated)
+    assert np.array_equal(ideal.instrument, flawed.instrument)
+    # The flaw adds exactly its size times the instrument to the outcome.
+    assert np.allclose(flawed.outcome - ideal.outcome, 1.5 * ideal.instrument)
+
+    grouped = make_patients(2000, 1.0, seed=3, instrument_strength=1.0, instrument_groups=50)
+    assert grouped.features.equals(ideal.features)
+    assert np.array_equal(grouped.hidden, ideal.hidden)

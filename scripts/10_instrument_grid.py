@@ -14,7 +14,8 @@ two models to each dataset:
           with the two unexplained parts allowed to be linked (rho)
 
 Settings: the seven hidden-factor settings of step 2, two instrument
-strengths, ten datasets each (140 datasets).
+strengths, twenty datasets each (280 datasets). The first ten were run
+on 2026-10-07 and the second ten on 2026-10-08.
 
 An instrument strength of 0.5 moves drug choice about as much as BMI does;
 1.0 moves it twice as much.
@@ -22,7 +23,7 @@ An instrument strength of 0.5 moves drug choice about as much as BMI does;
 Results go to results/generator-v<version>/instrument/<COMPUTER NAME>.csv,
 two rows per dataset.
 
-Run:  uv run python scripts/10_instrument_grid.py   (about two and a half hours)
+Run:  uv run python scripts/10_instrument_grid.py   (about two and a half hours for ten datasets per setting)
 """
 
 import argparse
@@ -40,7 +41,7 @@ grid = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(grid)
 
 INSTRUMENT_STRENGTHS = (0.5, 1.0)
-REPEATS = 10
+REPEATS = 20
 
 FOLDER = grid.FOLDER / "instrument"
 RESULTS = FOLDER / f"{grid.HOST}.csv"
