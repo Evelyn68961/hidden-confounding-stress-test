@@ -18,7 +18,10 @@ versions are never pooled.
 | `generator-v2/crosscheck/EVELYN68961_refits.csv` | 3 | Three of the second computer's fits, repeated on the first | `scripts/04_cross_check.py refit` |
 | `generator-v2/joint_model/EVELYN68961.csv` | 280 | Plain regression and joint model, no instrument; 20 datasets per setting | `scripts/08_joint_model_grid.py` |
 | `generator-v2/validation/EVELYN68961.csv` | 280 | The concordant-against-discordant check, for the plain regression and for a model that is exactly right | `scripts/09_validation_framework.py` |
-| `generator-v2/instrument/EVELYN68961.csv` | 280 | Plain regression and joint model, with an instrument; 10 datasets per setting | `scripts/10_instrument_grid.py` |
+| `generator-v2/instrument/EVELYN68961.csv` | 560 | Plain regression and joint model, with an instrument; 20 datasets per setting. Report 08 uses datasets 0 to 9; report 09 adds 10 to 19 | `scripts/10_instrument_grid.py` |
+| `generator-v2/realistic/EVELYN68961.csv` | 160 | Plain regression and joint model with four less ideal instruments (report 10) | `scripts/12_followup_runs.py --run realistic` |
+| `generator-v2/as_feature/EVELYN68961.csv` | 70 | Plain regression with the instrument added as a feature (report 11) | `scripts/12_followup_runs.py --run as_feature` |
+| `generator-v2/more_patients/EVELYN68961.csv` | 40 | Plain regression and joint model on 20,000 patients, no instrument (report 12) | `scripts/12_followup_runs.py --run more_patients` |
 | `generator-v1/` | 24 | Superseded. Kept as a record and used nowhere; see its own README | |
 
 The file name is the name of the computer that produced it. Each computer
@@ -43,7 +46,9 @@ The setting:
 | `strength` | Strength of the hidden factor: 0, 0.5 or 1 |
 | `instrument_strength` | Strength of the instrument: 0.5 or 1 (instrument file only) |
 | `repeat` | Number of the simulated dataset. It is also the random seed |
-| `model` | `plain` or `joint`; in the validation file, `plain` or `truth` |
+| `model` | `plain` or `joint`; in the validation file, `plain` or `truth`; in the as-feature file, `plain_with_instrument` |
+| `run`, `variant` | Follow-up files: which run, and which instrument (`practice_100`, `practice_25`, `flaw_0.5`, `flaw_1.0`, `ideal_as_feature`, `no_instrument`) |
+| `patients` | Follow-up files: patients per dataset |
 
 The scores, all against the known truth (errors in mmol/mol of HbA1c):
 

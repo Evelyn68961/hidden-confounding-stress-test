@@ -1,7 +1,8 @@
 # What this project found, in plain words
 
-A summary of reports 01 to 08. Each claim below points to the report that
-holds the numbers, the checks and the limits. Written 2026-10-08.
+A summary of reports 01 to 12. Each claim below points to the report that
+holds the numbers, the checks and the limits. Written 2026-10-08; the
+follow-ups section was added on 2026-10-09.
 
 ## The question
 
@@ -96,6 +97,43 @@ check works. With a hidden factor, it agreed with the misled model: the plain
 regression predicted a benefit of 4.82 mmol/mol, the check observed 4.93, and
 the true benefit was 0.70. The same hidden factor made the check disagree
 with a model that was exactly right ([report 07](07_validation_check.md)).
+
+## Follow-ups (reports 09 to 12, added 2026-10-09)
+
+Four further runs tested how far findings 5 and 6 can be trusted. The numbers
+above are unchanged; these sit beside them.
+
+### 8. The instrument result holds on new datasets
+
+On ten new datasets per setting, a strong instrument removed 72% of the error
+for the linear form, 68% for threshold and 39% for effect, against 75%, 64%
+and 40% on the first ten. With nothing hidden, the joint model reported a
+hidden link in 3 of 40 fits, which is about what chance allows
+([report 09](09_instrument_twenty_datasets.md)).
+
+### 9. A slightly flawed instrument is worse than none
+
+An instrument shared by all the patients of a practice corrected as well as
+an ideal one. An instrument that also affects the outcome directly, by as
+little as 1 mmol/mol, made the joint model worse than the plain regression
+(an error of 5.90 against 4.51). With nothing hidden it created an error of
+4.55 where the plain regression had 0.99, and the model reported a hidden
+link in all ten datasets. The flaw is credited to the drug at about five
+times its size ([report 10](10_less_ideal_instruments.md)).
+
+### 10. An instrument must not be used as an ordinary feature
+
+Added to the plain regression like any other feature, the instrument made the
+error 13% to 17% larger in every setting with a hidden factor
+([report 11](11_instrument_as_a_feature.md)).
+
+### 11. More patients do not replace an instrument
+
+With 20,000 patients and no instrument, the joint model still estimated no
+link, and its error was unchanged (4.23). Its intervals narrowed, so the share
+containing the truth fell from 84% to under 1%. The honest intervals of
+finding 5 were a result of having few patients
+([report 12](12_more_patients.md)).
 
 ## What this does not show
 

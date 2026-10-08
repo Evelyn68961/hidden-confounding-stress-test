@@ -74,6 +74,7 @@ Strength 1 is twice that, which is a severe setting.
 | 3 | A joint model of drug choice and outcome in PyMC: without an instrument, then with one | [05](reports/05_joint_model_trial_and_check.md), [06](reports/06_joint_model_grid.md), [08](reports/08_instrument.md) |
 | 3, addition | The published concordant-against-discordant validation check, applied where the truth is known | [07](reports/07_validation_check.md) |
 | 4 | Figures and write-up | [SUMMARY](reports/SUMMARY.md) |
+| Follow-ups | Ten more datasets for the instrument; less ideal instruments; the instrument used as a feature; four times as many patients | [09](reports/09_instrument_twenty_datasets.md), [10](reports/10_less_ideal_instruments.md), [11](reports/11_instrument_as_a_feature.md), [12](reports/12_more_patients.md) |
 
 ## Results
 
@@ -143,6 +144,18 @@ Two limits apply to that report before anything else:
   hidden factor cannot drive the choice of drug. The simulation has no trial
   arm.
 
+### Follow-ups ([reports 09 to 12](reports/README.md))
+
+Run after the results above, and reported beside them without changing them.
+
+| Question | Answer |
+|---|---|
+| Does the instrument result hold on ten new datasets per setting? | Yes. Error removed: 72%, 68% and 39% for the three forms, against 75%, 64% and 40%. |
+| Does it survive an instrument shared within a practice? | Yes. The correction is as good as with one value per patient. |
+| Does it survive an instrument that also affects the outcome a little? | No. A direct effect of 1 mmol/mol makes the joint model worse than the plain regression, and creates an error of 4.55 mmol/mol when nothing is hidden. |
+| What if the instrument is added to the plain regression as a feature? | The error grows by 13% to 17%. |
+| Without an instrument, do 20,000 patients help where 5,000 did not? | No. The bias stays, and the intervals narrow until under 1% contain the truth. |
+
 ## Limits
 
 - It is a simulation. The sizes depend on how the patients were built.
@@ -172,10 +185,14 @@ uv run python scripts/08_joint_model_grid.py       # about 2.5 hours
 uv run python scripts/09_validation_framework.py   # about 45 minutes
 uv run python scripts/10_instrument_grid.py        # about 2.5 hours
 uv run python scripts/11_summarise_step3.py
+uv run python scripts/12_followup_runs.py --run realistic       # about 1.5 hours
+uv run python scripts/12_followup_runs.py --run as_feature      # about 30 minutes
+uv run python scripts/12_followup_runs.py --run more_patients   # about 1 hour
+uv run python scripts/13_summarise_followups.py
 ```
 
 To check the reported numbers without refitting anything, run only the tests
-and scripts 05 and 11. They rebuild the tables and figures from the saved
+and scripts 05, 11 and 13. They rebuild the tables and figures from the saved
 results.
 
 The long runs save each result as it finishes and continue where they stopped

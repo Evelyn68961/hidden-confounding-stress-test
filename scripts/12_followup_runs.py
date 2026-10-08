@@ -24,8 +24,8 @@ result can be set beside the earlier one for the same simulated hidden factor.
 Results go to results/generator-v<version>/<run>/<COMPUTER NAME>.csv.
 
 Run:  uv run python scripts/12_followup_runs.py --run realistic       (about 1.5 hours)
-      uv run python scripts/12_followup_runs.py --run as_feature      (about 40 minutes)
-      uv run python scripts/12_followup_runs.py --run more_patients   (about 2.5 hours)
+      uv run python scripts/12_followup_runs.py --run as_feature      (about 30 minutes)
+      uv run python scripts/12_followup_runs.py --run more_patients   (about 1 hour)
 """
 
 import argparse
