@@ -16,6 +16,8 @@ report.
 | 07 | 2026-10-07 | [The published validation check](07_validation_check.md) | Does comparing concordant with matched discordant patients notice a model misled by a hidden factor? |
 | 08 | 2026-10-08 | [Joint model with an instrument](08_instrument.md) | Given an instrument, does the joint model correct the bias, and what does it cost? |
 | 09 | 2026-10-08 | [The instrument result on ten more datasets](09_instrument_twenty_datasets.md) | Report 08 rests on ten datasets per setting. Does its result hold on ten new ones? |
+| 10 | 2026-10-09 | [Less ideal instruments](10_less_ideal_instruments.md) | Does the correction survive an instrument shared within a practice, or one that is slightly flawed? |
+| 11 | 2026-10-09 | [The instrument used as an ordinary feature](11_instrument_as_a_feature.md) | What happens if the instrument is added to the plain regression like any other feature? |
 
 A plain-language account of reports 01 to 08 is in [SUMMARY.md](SUMMARY.md).
 Reports from 09 on are follow-ups. Each adds data beside an earlier report
