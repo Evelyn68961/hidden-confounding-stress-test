@@ -237,6 +237,10 @@ if __name__ == "__main__":
 
     instrument = load("instrument", ["model", "instrument_strength", "shape", "strength", "repeat"])
     if instrument is not None:
+        # Report 08 covers the first ten datasets per setting (repeats 0 to 9).
+        # Later repeats were added to the same file and are reported separately,
+        # so this table and figure stay exactly as report 08 describes them.
+        instrument = instrument[instrument["repeat"] < 10]
         instrument_table = summarise_instrument(instrument)
         instrument_table.to_csv(TABLES / "step3_instrument.csv", index=False, float_format="%.4f")
         draw_instrument(instrument_table)
