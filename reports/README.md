@@ -15,5 +15,8 @@ report.
 | 06 | 2026-10-07 | [Joint model on all 140 datasets, no instrument](06_joint_model_grid.md) | Without an instrument, does a joint model detect a hidden factor, correct the bias, or report honest uncertainty? |
 | 07 | 2026-10-07 | [The published validation check](07_validation_check.md) | Does comparing concordant with matched discordant patients notice a model misled by a hidden factor? |
 | 08 | 2026-10-08 | [Joint model with an instrument](08_instrument.md) | Given an instrument, does the joint model correct the bias, and what does it cost? |
+| 09 | 2026-10-08 | [The instrument result on ten more datasets](09_instrument_twenty_datasets.md) | Report 08 rests on ten datasets per setting. Does its result hold on ten new ones? |
 
-A plain-language account of all eight reports is in [SUMMARY.md](SUMMARY.md).
+A plain-language account of reports 01 to 08 is in [SUMMARY.md](SUMMARY.md).
+Reports from 09 on are follow-ups. Each adds data beside an earlier report
+and leaves that report's numbers as they were.
