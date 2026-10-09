@@ -172,10 +172,9 @@ concerns the plain regression only.
 
 ## Limits
 
-- **The corrected model was not run** at instrument strength 0.5, on the
-  practice-level or invalid instruments, or on datasets 10 to 19. For those,
-  the one-noise results of reports 08 to 10 stand, with the two-step check
-  where it was run.
+- **The corrected model was not run** in this report at instrument strength
+  0.5, on the practice-level or invalid instruments, or on datasets 10 to 19.
+  [Report 14](14_corrected_model_all_instrument_settings.md) does that.
 - **The two-step method is a check, not a second analysis.** It gives an
   average effect only, with no intervals.
 - **One mismatch was found and removed. Others remain:** drug choice follows

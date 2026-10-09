@@ -1,6 +1,6 @@
 # What this project found, in plain words
 
-A summary of reports 01 to 13. Each claim below points to the report that
+A summary of reports 01 to 14. Each claim below points to the report that
 holds the numbers, the checks and the limits. Written 2026-10-08; the
 follow-ups section and the verification section were added on 2026-10-09.
 Findings 5, 6 and 11 are corrected by finding 12.
@@ -153,6 +153,24 @@ findings 5 and 11 described. It is very uncertain, and its answers swing by
 several mmol/mol between datasets. A joint model still needs an instrument;
 the reason is that the data hold almost no information about the link without
 one ([report 13](13_verification_and_corrected_joint_model.md)).
+
+### 13. The corrected joint model on every instrument setting
+
+Fitted on all the settings of findings 6, 8 and 9
+([report 14](14_corrected_model_all_instrument_settings.md)):
+
+- **A valid instrument of full strength, twenty datasets:** all of the error
+  removed for the linear form, 96% for threshold, 54% for effect.
+- **A practice-level instrument** works as well as an ideal one.
+- **A weaker instrument** still removes the bias but makes the answers twice
+  as variable. With nothing hidden it sends 23% of patients to the worse
+  drug, against 11.5% for the plain regression.
+- **An invalid instrument** is worse than finding 9 said. A direct effect of
+  1 mmol/mol with nothing hidden gives an error of 5.98 and sends 45% of
+  patients to the worse drug.
+
+The joint model is a trade: it removes bias and adds variability. It pays
+when the hidden factor is strong and the instrument is strong and valid.
 
 ## What this does not show
 

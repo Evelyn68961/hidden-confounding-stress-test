@@ -1,4 +1,4 @@
-"""Summarise the follow-up runs (reports 09 to 13).
+"""Summarise the follow-up runs (reports 09 to 14).
 
 Reads the saved results and writes one table per follow-up run to
 reports/tables/. Each table sets the new result beside the earlier result it
@@ -11,6 +11,8 @@ table is changed.
   followup_more_patients.csv       script 12 --run more_patients, beside 5,000 patients
   followup_per_drug_noise.csv      script 12 --run per_drug_noise, beside the joint model
                                    with one noise level and the plain regression
+  followup_per_drug_noise_instruments.csv
+                                   the same model on every other instrument setting
 
 A run whose results are not there yet is skipped.
 
@@ -110,6 +112,10 @@ def more_patients(rows, joint_model):
 def per_drug_noise(rows, instrument, joint_model, more):
     """The joint model with a noise level per drug, beside the earlier models on the same datasets."""
     off_or_linear = lambda d: (d["shape"] == "none") | ((d["shape"] == "linear") & (d["strength"] == 1.0))
+    # Report 13 covers the first part of the run: datasets 0 to 9 of three variants.
+    rows = rows[
+        rows["variant"].isin(["ideal_instrument", "no_instrument", "no_instrument_20000"]) & (rows["repeat"] < 10)
+    ]
     parts = [
         instrument[(instrument["instrument_strength"] == 1.0) & (instrument["repeat"] < 10)].assign(
             setting="ideal instrument, 5,000 patients"
@@ -143,6 +149,39 @@ def per_drug_noise(rows, instrument, joint_model, more):
     return table.sort_values(["setting", "shape", "strength", "model"], kind="stable")
 
 
+def add_rms(table, rows, by):
+    rms = rows.groupby(by, sort=False)["bias_average"].apply(lambda errors: float((errors**2).mean() ** 0.5))
+    table["rms_error"] = rms.to_numpy()
+    return table
+
+
+def per_drug_noise_instruments(rows, instrument, realistic_rows):
+    """The per-drug noise model on every instrument setting, beside the earlier models (report 14)."""
+    by = ["setting", "shape", "strength", "model"]
+    parts = []
+
+    ideal = rows[rows["variant"] == "ideal_instrument"]
+    earlier = instrument[instrument["instrument_strength"] == 1.0]
+    for label, keep in (
+        ("ideal 1.0, datasets 0-9", lambda d: d["repeat"] < 10),
+        ("ideal 1.0, datasets 10-19", lambda d: d["repeat"] >= 10),
+        ("ideal 1.0, all twenty", lambda d: d["repeat"] >= 0),
+    ):
+        parts.append(pd.concat([earlier[keep(earlier)], ideal[keep(ideal)]]).assign(setting=label))
+
+    weak = rows[rows["variant"] == "ideal_instrument_0.5"]
+    earlier = instrument[(instrument["instrument_strength"] == 0.5) & (instrument["repeat"] < 10)]
+    parts.append(pd.concat([earlier, weak]).assign(setting="ideal 0.5, datasets 0-9"))
+
+    for variant in ("practice_100", "practice_25", "flaw_0.5", "flaw_1.0"):
+        new = rows[rows["variant"] == variant]
+        old = realistic_rows[realistic_rows["variant"] == variant]
+        parts.append(pd.concat([old, new]).assign(setting=variant))
+
+    both = pd.concat(parts, ignore_index=True)
+    return add_rms(summarise(both, by), both, by)
+
+
 if __name__ == "__main__":
     TABLES.mkdir(parents=True, exist_ok=True)
     instrument = load("instrument")
@@ -151,9 +190,9 @@ if __name__ == "__main__":
     if instrument is not None and (instrument["repeat"] >= 10).any():
         save(instrument_twenty(instrument), "followup_instrument_twenty.csv")
 
-    rows = load("realistic")
-    if rows is not None:
-        save(realistic(rows, instrument), "followup_realistic.csv")
+    realistic_rows = load("realistic")
+    if realistic_rows is not None:
+        save(realistic(realistic_rows, instrument), "followup_realistic.csv")
 
     rows = load("as_feature")
     if rows is not None:
@@ -166,3 +205,8 @@ if __name__ == "__main__":
     rows = load("per_drug_noise")
     if rows is not None:
         save(per_drug_noise(rows, instrument, joint_model, more), "followup_per_drug_noise.csv")
+        if (rows["variant"] == "ideal_instrument_0.5").any():
+            save(
+                per_drug_noise_instruments(rows, instrument, realistic_rows),
+                "followup_per_drug_noise_instruments.csv",
+            )

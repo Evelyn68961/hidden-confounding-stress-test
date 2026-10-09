@@ -28,14 +28,18 @@ uses simulated patients only. It is not a verdict on any published model.
   hold almost no information about the hidden link, and the model's answers
   swing widely from one dataset to the next.
 - **With a valid instrument it removes all of the error for a linear hidden
-  factor, 92% for a threshold form and 54% when the hidden factor changes how
-  well a drug works.** A classical two-step method agrees.
+  factor, 96% for a threshold form and 54% when the hidden factor changes how
+  well a drug works** (twenty datasets). A classical two-step method agrees.
+- **The joint model is a trade.** It removes bias and adds variability. With
+  nothing hidden, or with a weak instrument, it sends more patients to the
+  worse drug than the plain regression does.
 - **An invalid instrument does more harm than none.** A direct effect on the
-  outcome of 1 mmol/mol makes the joint model worse than a model that ignores
-  the instrument.
+  outcome of 1 mmol/mol, with nothing hidden, gives an error of 5.98 mmol/mol
+  and sends 45% of patients to the worse drug.
 
-The third and fourth points use the corrected joint model of
-[report 13](reports/13_verification_and_corrected_joint_model.md). An
+The last four points use the corrected joint model of reports
+[13](reports/13_verification_and_corrected_joint_model.md) and
+[14](reports/14_corrected_model_all_instrument_settings.md). An
 independent review found that the first joint model assumed one noise level
 for both drugs where the simulated patients have two. The tables under
 "Results" below are from the first joint model and are kept as they were
@@ -87,7 +91,7 @@ Strength 1 is twice that, which is a severe setting.
 | 3, addition | The published concordant-against-discordant validation check, applied where the truth is known | [07](reports/07_validation_check.md) |
 | 4 | Figures and write-up | [SUMMARY](reports/SUMMARY.md) |
 | Follow-ups | Ten more datasets for the instrument; less ideal instruments; the instrument used as a feature; four times as many patients | [09](reports/09_instrument_twenty_datasets.md), [10](reports/10_less_ideal_instruments.md), [11](reports/11_instrument_as_a_feature.md), [12](reports/12_more_patients.md) |
-| Verification | An independent code review, a second method for the key numbers, and a joint model with a noise level per drug | [13](reports/13_verification_and_corrected_joint_model.md) |
+| Verification | An independent code review, a second method for the key numbers, and a joint model with a noise level per drug, then fitted on every instrument setting | [13](reports/13_verification_and_corrected_joint_model.md), [14](reports/14_corrected_model_all_instrument_settings.md) |
 
 ## Results
 
@@ -157,7 +161,7 @@ Two limits apply to that report before anything else:
   hidden factor cannot drive the choice of drug. The simulation has no trial
   arm.
 
-### Follow-ups and verification ([reports 09 to 13](reports/README.md))
+### Follow-ups and verification ([reports 09 to 14](reports/README.md))
 
 Run after the results above, and reported beside them without changing them.
 
@@ -169,6 +173,7 @@ Run after the results above, and reported beside them without changing them.
 | What if the instrument is added to the plain regression as a feature? | The error grows by 13% to 17%. |
 | Without an instrument, do 20,000 patients help where 5,000 did not? | No. The bias stays, and the intervals narrow until under 1% contain the truth. Report 13 shows the narrowing came from a mismatch in the joint model. |
 | Are the numbers and the explanations right? | The numbers are. An independent review found no coding error, and least squares reproduces the plain regression exactly. Four explanations were corrected, and the joint model was refitted with a noise level per drug. |
+| Do the instrument results hold with the corrected joint model? | Yes, and more sharply. A valid instrument removes more of the bias than first reported, and an invalid one does more damage (report 14). |
 
 ## Limits
 
@@ -202,7 +207,7 @@ uv run python scripts/11_summarise_step3.py
 uv run python scripts/12_followup_runs.py --run realistic       # about 1.5 hours
 uv run python scripts/12_followup_runs.py --run as_feature      # about 30 minutes
 uv run python scripts/12_followup_runs.py --run more_patients   # about 1 hour
-uv run python scripts/12_followup_runs.py --run per_drug_noise  # about 4 hours
+uv run python scripts/12_followup_runs.py --run per_drug_noise  # about 8 hours
 uv run python scripts/13_summarise_followups.py
 uv run python checks/independent_check_1.py                     # about a minute
 uv run python checks/independent_check_2.py
