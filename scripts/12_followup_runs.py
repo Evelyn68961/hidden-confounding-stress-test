@@ -24,6 +24,10 @@ Each run answers one question left open by reports 06 and 08.
                  1.0 (seven hidden-factor settings), and without an instrument
                  at 5,000 and at 20,000 patients (hidden factor off, and
                  linear at strength 1). One model.
+                 A second part, added the same day, covers every other
+                 instrument setting of reports 08 to 10 with this model: the
+                 ideal instrument at strength 0.5, datasets 10 to 19 at
+                 strength 1.0, and the four less ideal instruments.
 
 Ten datasets per setting, with the same seeds as scripts 08 and 10, so each
 result can be set beside the earlier one for the same simulated hidden factor.
@@ -95,7 +99,25 @@ def settings_for(run):
             for repeat in range(REPEATS)
             for shape, strength in OFF_AND_LINEAR
         ]
-        return with_instrument + without
+        second_part = (
+            [
+                ("ideal_instrument", shape, strength, repeat)
+                for repeat in range(REPEATS, 2 * REPEATS)
+                for shape, strength, _ in grid.all_settings(repeat, repeat)
+            ]
+            + [
+                (variant, shape, strength, repeat)
+                for repeat in range(REPEATS)
+                for variant in INSTRUMENTS
+                for shape, strength in OFF_AND_LINEAR
+            ]
+            + [
+                ("ideal_instrument_0.5", shape, strength, repeat)
+                for repeat in range(REPEATS)
+                for shape, strength, _ in grid.all_settings(repeat, repeat)
+            ]
+        )
+        return with_instrument + without + second_part
     raise SystemExit(f"unknown run {run!r}")
 
 
@@ -116,8 +138,15 @@ def run_one(run, variant, shape, strength, repeat, commit):
         fits = (("plain_with_instrument", {"link_errors": False, "instrument_as_feature": True}),)
     elif run == "per_drug_noise":
         n = MANY_PATIENTS if variant == "no_instrument_20000" else grid.N_PATIENTS
-        with_instrument = variant == "ideal_instrument"
-        options = {"instrument_strength": 1.0} if with_instrument else {}
+        with_instrument = not variant.startswith("no_instrument")
+        if variant in INSTRUMENTS:
+            options = INSTRUMENTS[variant]
+        elif variant == "ideal_instrument_0.5":
+            options = {"instrument_strength": 0.5}
+        elif with_instrument:
+            options = {"instrument_strength": 1.0}
+        else:
+            options = {}
         fits = (("joint_per_drug_noise", {"use_instrument": with_instrument, "noise_per_drug": True}),)
     else:
         n, options = MANY_PATIENTS, {}
