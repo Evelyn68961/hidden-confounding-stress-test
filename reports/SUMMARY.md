@@ -1,8 +1,9 @@
 # What this project found, in plain words
 
-A summary of reports 01 to 12. Each claim below points to the report that
+A summary of reports 01 to 13. Each claim below points to the report that
 holds the numbers, the checks and the limits. Written 2026-10-08; the
-follow-ups section was added on 2026-10-09.
+follow-ups section and the verification section were added on 2026-10-09.
+Findings 5, 6 and 11 are corrected by finding 12.
 
 ## The question
 
@@ -134,6 +135,24 @@ link, and its error was unchanged (4.23). Its intervals narrowed, so the share
 containing the truth fell from 84% to under 1%. The honest intervals of
 finding 5 were a result of having few patients
 ([report 12](12_more_patients.md)).
+
+### 12. Verification, and a correction to findings 5, 6 and 11
+
+An independent code review found no error that changes a number, and least
+squares reproduced the plain regression exactly. The review did find a
+mismatch: the joint model assumed one noise level for both drugs, and the
+simulated patients have two.
+
+With that removed, and an ideal instrument, the joint model corrects all of
+the error for the linear form, 92% for threshold and 54% for effect, where
+finding 6 reported 75%, 64% and 40%. A classical two-step method agrees.
+It is also more variable, so one dataset's answer is no closer to the truth.
+
+Without an instrument, the corrected model is not confidently wrong, as
+findings 5 and 11 described. It is very uncertain, and its answers swing by
+several mmol/mol between datasets. A joint model still needs an instrument;
+the reason is that the data hold almost no information about the link without
+one ([report 13](13_verification_and_corrected_joint_model.md)).
 
 ## What this does not show
 

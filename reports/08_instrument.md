@@ -142,6 +142,19 @@ How often the joint model's 95% interval for rho excluded zero:
   identical after the generator change.
 - **No duplicates and one code commit** across the 280 rows.
 
+## Correction added 2026-10-09
+
+The numbers in this report stand. Reading 3 does not.
+
+Reading 3 says a quarter of the bias remains because the model shrinks
+towards "no hidden link" when information is limited.
+[Report 13](13_verification_and_corrected_joint_model.md) shows the remaining
+bias came from a mismatch: the joint model assumes one noise level for both
+drugs and the simulated patients have two. With a noise level per drug, the
+same model on the same datasets removes all of the error for the linear form
+(an error of −0.08 against 0.95 here), 92% for threshold and 54% for effect.
+A classical two-step method agrees. The order of the three forms is unchanged.
+
 ## Limits
 
 - **Ten datasets per setting,** half as many as in steps 2 and 3. The standard

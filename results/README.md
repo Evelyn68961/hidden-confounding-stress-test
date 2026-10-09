@@ -22,6 +22,7 @@ versions are never pooled.
 | `generator-v2/realistic/EVELYN68961.csv` | 160 | Plain regression and joint model with four less ideal instruments (report 10) | `scripts/12_followup_runs.py --run realistic` |
 | `generator-v2/as_feature/EVELYN68961.csv` | 70 | Plain regression with the instrument added as a feature (report 11) | `scripts/12_followup_runs.py --run as_feature` |
 | `generator-v2/more_patients/EVELYN68961.csv` | 40 | Plain regression and joint model on 20,000 patients, no instrument (report 12) | `scripts/12_followup_runs.py --run more_patients` |
+| `generator-v2/per_drug_noise/EVELYN68961.csv` | 110 | Joint model with a noise level per drug: with the ideal instrument, and without an instrument at 5,000 and 20,000 patients (report 13) | `scripts/12_followup_runs.py --run per_drug_noise` |
 | `generator-v1/` | 24 | Superseded. Kept as a record and used nowhere; see its own README | |
 
 The file name is the name of the computer that produced it. Each computer
@@ -46,8 +47,8 @@ The setting:
 | `strength` | Strength of the hidden factor: 0, 0.5 or 1 |
 | `instrument_strength` | Strength of the instrument: 0.5 or 1 (instrument file only) |
 | `repeat` | Number of the simulated dataset. It is also the random seed |
-| `model` | `plain` or `joint`; in the validation file, `plain` or `truth`; in the as-feature file, `plain_with_instrument` |
-| `run`, `variant` | Follow-up files: which run, and which instrument (`practice_100`, `practice_25`, `flaw_0.5`, `flaw_1.0`, `ideal_as_feature`, `no_instrument`) |
+| `model` | `plain` or `joint`; in the validation file, `plain` or `truth`; in the as-feature file, `plain_with_instrument`; in the per-drug-noise file, `joint_per_drug_noise` |
+| `run`, `variant` | Follow-up files: which run, and which instrument (`practice_100`, `practice_25`, `flaw_0.5`, `flaw_1.0`, `ideal_as_feature`, `ideal_instrument`, `no_instrument`, `no_instrument_20000`) |
 | `patients` | Follow-up files: patients per dataset |
 
 The scores, all against the known truth (errors in mmol/mol of HbA1c):

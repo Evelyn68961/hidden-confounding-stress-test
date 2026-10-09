@@ -91,6 +91,19 @@ For comparison, the causal forest on the same datasets (report 03):
   link (0.61 for a true 0.6) in data made from its own assumptions.
 - **No duplicates and one code commit** across the 280 rows.
 
+## Correction added 2026-10-09
+
+The numbers in this report stand. One reading does not.
+
+This report says that without an instrument the joint model's intervals widen
+and become far more honest. [Report 13](13_verification_and_corrected_joint_model.md)
+shows why they looked honest: the joint model assumes one noise level for both
+drugs, the simulated patients have two, and that mismatch held the model's
+estimate of the link near zero. With the mismatch removed, the model without
+an instrument is very uncertain (its interval for the link runs from about
+−0.4 to 0.5) and its answers swing widely between datasets. The conclusion
+that a joint model needs an instrument is unchanged.
+
 ## Limits
 
 - **Do not read plain against forest as simple against flexible.** The

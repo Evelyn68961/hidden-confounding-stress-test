@@ -24,10 +24,22 @@ uses simulated patients only. It is not a verdict on any published model.
   forest's error in the average effect is 4.44 mmol/mol, against 4.40 for a
   comparison of the two drug groups with no adjustment, and its intervals
   contain the truth for 28% of patients.
-- **A joint model without an instrument does not detect the hidden factor**
-  in any of 140 fits. Its intervals widen, but the bias stays.
-- **With a strong instrument it removes 40% to 75% of the error**, depending
-  on the form of the hidden factor.
+- **A joint model without an instrument cannot correct for it.** The data
+  hold almost no information about the hidden link, and the model's answers
+  swing widely from one dataset to the next.
+- **With a valid instrument it removes all of the error for a linear hidden
+  factor, 92% for a threshold form and 54% when the hidden factor changes how
+  well a drug works.** A classical two-step method agrees.
+- **An invalid instrument does more harm than none.** A direct effect on the
+  outcome of 1 mmol/mol makes the joint model worse than a model that ignores
+  the instrument.
+
+The third and fourth points use the corrected joint model of
+[report 13](reports/13_verification_and_corrected_joint_model.md). An
+independent review found that the first joint model assumed one noise level
+for both drugs where the simulated patients have two. The tables under
+"Results" below are from the first joint model and are kept as they were
+reported; report 13 sets the two side by side.
 
 ## The problem
 
@@ -75,6 +87,7 @@ Strength 1 is twice that, which is a severe setting.
 | 3, addition | The published concordant-against-discordant validation check, applied where the truth is known | [07](reports/07_validation_check.md) |
 | 4 | Figures and write-up | [SUMMARY](reports/SUMMARY.md) |
 | Follow-ups | Ten more datasets for the instrument; less ideal instruments; the instrument used as a feature; four times as many patients | [09](reports/09_instrument_twenty_datasets.md), [10](reports/10_less_ideal_instruments.md), [11](reports/11_instrument_as_a_feature.md), [12](reports/12_more_patients.md) |
+| Verification | An independent code review, a second method for the key numbers, and a joint model with a noise level per drug | [13](reports/13_verification_and_corrected_joint_model.md) |
 
 ## Results
 
@@ -144,7 +157,7 @@ Two limits apply to that report before anything else:
   hidden factor cannot drive the choice of drug. The simulation has no trial
   arm.
 
-### Follow-ups ([reports 09 to 12](reports/README.md))
+### Follow-ups and verification ([reports 09 to 13](reports/README.md))
 
 Run after the results above, and reported beside them without changing them.
 
@@ -154,7 +167,8 @@ Run after the results above, and reported beside them without changing them.
 | Does it survive an instrument shared within a practice? | Yes. The correction is as good as with one value per patient. |
 | Does it survive an instrument that also affects the outcome a little? | No. A direct effect of 1 mmol/mol makes the joint model worse than the plain regression, and creates an error of 4.55 mmol/mol when nothing is hidden. |
 | What if the instrument is added to the plain regression as a feature? | The error grows by 13% to 17%. |
-| Without an instrument, do 20,000 patients help where 5,000 did not? | No. The bias stays, and the intervals narrow until under 1% contain the truth. |
+| Without an instrument, do 20,000 patients help where 5,000 did not? | No. The bias stays, and the intervals narrow until under 1% contain the truth. Report 13 shows the narrowing came from a mismatch in the joint model. |
+| Are the numbers and the explanations right? | The numbers are. An independent review found no coding error, and least squares reproduces the plain regression exactly. Four explanations were corrected, and the joint model was refitted with a noise level per drug. |
 
 ## Limits
 
@@ -188,7 +202,10 @@ uv run python scripts/11_summarise_step3.py
 uv run python scripts/12_followup_runs.py --run realistic       # about 1.5 hours
 uv run python scripts/12_followup_runs.py --run as_feature      # about 30 minutes
 uv run python scripts/12_followup_runs.py --run more_patients   # about 1 hour
+uv run python scripts/12_followup_runs.py --run per_drug_noise  # about 4 hours
 uv run python scripts/13_summarise_followups.py
+uv run python checks/independent_check_1.py                     # about a minute
+uv run python checks/independent_check_2.py
 ```
 
 To check the reported numbers without refitting anything, run only the tests
@@ -209,6 +226,8 @@ if run again. Script 03 can be shared between computers; see
 - `docs/calibration.md` lists where each number in the generator comes from.
 - `docs/RUNNER.md` explains how a second computer runs part of the long jobs
   without the results getting mixed up.
+- `checks/` holds two scripts that recompute key results with least squares
+  and a classical two-step correction, using numpy and scipy only.
 - `tests/` checks the generator, including that the simulated cohort matches
   the published figures, and the validation check.
 - `scripts/` holds one numbered script per run or analysis.

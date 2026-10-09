@@ -106,6 +106,19 @@ Averages across ten datasets. Errors in the average effect, in mmol/mol.
 - **Earlier datasets are unchanged.** The 14 fingerprints of report 04 are
   identical after the generator change.
 
+## Correction added 2026-10-09
+
+The numbers in this report stand. Reading 4 gives a wrong figure.
+
+Reading 4 says one SD of the instrument changes the chance of the GLP-1 drug
+by roughly a fifth, so a direct effect is magnified about five times. The
+measured change is 0.15, and the textbook magnification is 1/0.15, about 6.5.
+A classical two-step method gives errors of 5.66 (nothing hidden) and 6.31
+(linear hidden factor) for a direct effect of 1 mmol/mol, where the joint
+model here gave 4.55 and 5.90
+([report 13](13_verification_and_corrected_joint_model.md)). The joint model
+of this report understated the damage; the conclusion is unchanged.
+
 ## Limits
 
 - **The practices differ only in the instrument.** Real practices also differ

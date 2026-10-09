@@ -104,6 +104,19 @@ Averages across ten datasets. Errors in the average effect, in mmol/mol.
 - **Time.** A fit took five minutes on average, against about two at
   5,000 patients.
 
+## Correction added 2026-10-09
+
+The numbers in this report stand. Reading 4 has now been tested.
+
+[Report 13](13_verification_and_corrected_joint_model.md) confirms the
+reason, and narrows it to one of the two mismatches named there: the single
+noise level. With a noise level per drug and 20,000 patients, the joint
+model without an instrument is no longer confidently wrong. Its estimate of
+the link is 0.09 (−0.27 to 0.39) against 0.00 (−0.09 to 0.10) here. Its
+average error is 1.97 against 4.23, but its answers vary so much between
+datasets (an SD of 3.45) that it is still not usable. Reading 6, that sample
+size does not substitute for an instrument, is unchanged.
+
 ## Limits
 
 - **One larger size.** 20,000 is still far below the hundreds of thousands in
