@@ -62,13 +62,32 @@ Averages across ten datasets. Errors in the average effect, in mmol/mol.
    That held at that size only. With enough data the model becomes confident
    again, and it is still wrong.
 
-4. **A likely reason.** Without an instrument, this model can learn the link
-   only from the shape of the outcome's distribution in each drug group. The
-   simulated patients do not follow the model exactly: drug choice follows a
-   logistic curve where the model assumes a probit one, and the two drug
-   groups have different amounts of noise where the model assumes one. Small
-   mismatches of that kind may be enough to pull the estimate to zero. This
-   explanation was not tested.
+4. **A likely reason, not yet tested.**
+
+   - **The one clue the model has.** Some patients receive a drug against the
+     odds: their recorded features made it unlikely, and they got it anyway.
+     If a hidden factor exists, it must have pushed those patients hard, so
+     their results should be shifted more than the results of patients who
+     were always likely to get that drug. Without an instrument, this pattern
+     is the only trace of a hidden link that the model can look for.
+   - **The clue is faint and easily lost.** It can be read only if the model's
+     description of everything else is exactly right. Any small error in that
+     description produces a pattern of the same kind, and the two cannot be
+     told apart.
+   - **The simulated patients differ from the model's description in two
+     small ways.** The chance of each drug follows a slightly different curve
+     from the one the model assumes (logistic, where the model assumes
+     probit). And results vary more on one drug than the other (an SD of 15.4
+     against 12.6), where the model assumes one amount of variation.
+   - **What points to this reason.** In report 05, the same model was given
+     20,000 patients built to match its description exactly, with a strong
+     link of 0.6. It found 0.61. And here its interval does not merely fail to
+     find the link: it excludes the true value. A model that only lacked
+     information would be unsure. This one is sure of a wrong value, which is
+     what a wrong description produces.
+   - **What would test it.** Patients built to match the model exactly, with
+     the weak link of this report (about 0.16), at 20,000 patients. That run
+     was not done.
 
 5. **With nothing hidden, more patients help as they should.** Both models
    send about 6% of patients to the worse drug at 20,000 patients, against
