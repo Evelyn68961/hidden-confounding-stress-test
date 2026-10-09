@@ -1,4 +1,4 @@
-"""Summarise the follow-up runs (reports 09 to 12).
+"""Summarise the follow-up runs (reports 09 to 13).
 
 Reads the saved results and writes one table per follow-up run to
 reports/tables/. Each table sets the new result beside the earlier result it
@@ -9,6 +9,8 @@ table is changed.
   followup_realistic.csv           script 12 --run realistic, beside the ideal instrument
   followup_as_feature.csv          script 12 --run as_feature, beside plain and joint
   followup_more_patients.csv       script 12 --run more_patients, beside 5,000 patients
+  followup_per_drug_noise.csv      script 12 --run per_drug_noise, beside the joint model
+                                   with one noise level and the plain regression
 
 A run whose results are not there yet is skipped.
 
@@ -105,6 +107,42 @@ def more_patients(rows, joint_model):
     )
 
 
+def per_drug_noise(rows, instrument, joint_model, more):
+    """The joint model with a noise level per drug, beside the earlier models on the same datasets."""
+    off_or_linear = lambda d: (d["shape"] == "none") | ((d["shape"] == "linear") & (d["strength"] == 1.0))
+    parts = [
+        instrument[(instrument["instrument_strength"] == 1.0) & (instrument["repeat"] < 10)].assign(
+            setting="ideal instrument, 5,000 patients"
+        ),
+        joint_model[(joint_model["repeat"] < 10) & off_or_linear(joint_model)].assign(
+            setting="no instrument, 5,000 patients"
+        ),
+        rows.assign(
+            setting=rows["variant"].map(
+                {
+                    "ideal_instrument": "ideal instrument, 5,000 patients",
+                    "no_instrument": "no instrument, 5,000 patients",
+                    "no_instrument_20000": "no instrument, 20,000 patients",
+                }
+            )
+        ),
+    ]
+    if more is not None:
+        parts.append(more.assign(setting="no instrument, 20,000 patients"))
+    both = pd.concat(parts, ignore_index=True)
+    table = summarise(both, ["setting", "shape", "strength", "model"])
+    # How far a single dataset's answer is from the truth, bias and spread together.
+    rms = both.groupby(["setting", "shape", "strength", "model"], sort=False)["bias_average"].apply(
+        lambda errors: float((errors**2).mean() ** 0.5)
+    )
+    table["rms_error"] = rms.to_numpy()
+    not_settled = both.assign(flag=both["rhat_worst_patient"] > 1.01).groupby(
+        ["setting", "shape", "strength", "model"], sort=False
+    )["flag"].sum()
+    table["fits_rhat_above_1.01"] = not_settled.to_numpy()
+    return table.sort_values(["setting", "shape", "strength", "model"], kind="stable")
+
+
 if __name__ == "__main__":
     TABLES.mkdir(parents=True, exist_ok=True)
     instrument = load("instrument")
@@ -121,6 +159,10 @@ if __name__ == "__main__":
     if rows is not None:
         save(as_feature(rows, instrument), "followup_as_feature.csv")
 
-    rows = load("more_patients")
+    more = load("more_patients")
+    if more is not None:
+        save(more_patients(more, joint_model), "followup_more_patients.csv")
+
+    rows = load("per_drug_noise")
     if rows is not None:
-        save(more_patients(rows, joint_model), "followup_more_patients.csv")
+        save(per_drug_noise(rows, instrument, joint_model, more), "followup_per_drug_noise.csv")
