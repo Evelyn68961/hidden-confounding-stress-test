@@ -41,6 +41,7 @@ def fit_joint_model(
     link_errors: bool = True,
     use_instrument: bool = False,
     instrument_as_feature: bool = False,
+    noise_per_drug: bool = False,
 ):
     """Fit the joint model.
 
@@ -58,6 +59,10 @@ def fit_joint_model(
     With `instrument_as_feature=True`, the instrument is instead treated like
     any recorded feature: it enters the outcome part and the choice part. This
     is the mistake of using an instrument as an ordinary predictor.
+
+    With `noise_per_drug=True`, each drug has its own noise level. The default
+    is one level for both, which the simulated patients do not obey: their
+    results vary more on the GLP-1 drug.
     """
     features = patients.features
     if instrument_as_feature:
@@ -74,7 +79,11 @@ def fit_joint_model(
         baseline_slopes = pm.Normal("baseline_slopes", 0, 1, shape=n_features)
         effect_level = pm.Normal("effect_level", 0, 1)
         effect_slopes = pm.Normal("effect_slopes", 0, 1, shape=n_features)
-        noise = pm.HalfNormal("noise", 1)
+        if noise_per_drug:
+            noise_by_drug = pm.HalfNormal("noise", 1, shape=2)
+            noise = noise_by_drug[patients.treated.astype("int64")]
+        else:
+            noise = pm.HalfNormal("noise", 1)
 
         # Drug choice: a probit regression on the same features.
         choice_level = pm.Normal("choice_level", 0, 1.5)

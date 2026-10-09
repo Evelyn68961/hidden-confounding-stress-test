@@ -18,6 +18,13 @@ Each run answers one question left open by reports 06 and 08.
                  20,000 patients than with 5,000? Hidden factor off, and
                  linear at strength 1. Plain and joint model.
 
+  per_drug_noise The joint model assumes one noise level for both drugs; the
+                 simulated patients have two. This run gives the joint model a
+                 noise level per drug: with the ideal instrument of strength
+                 1.0 (seven hidden-factor settings), and without an instrument
+                 at 5,000 and at 20,000 patients (hidden factor off, and
+                 linear at strength 1). One model.
+
 Ten datasets per setting, with the same seeds as scripts 08 and 10, so each
 result can be set beside the earlier one for the same simulated hidden factor.
 
@@ -76,6 +83,19 @@ def settings_for(run):
             for repeat in range(REPEATS)
             for shape, strength in OFF_AND_LINEAR
         ]
+    if run == "per_drug_noise":
+        with_instrument = [
+            ("ideal_instrument", shape, strength, repeat)
+            for repeat in range(REPEATS)
+            for shape, strength, _ in grid.all_settings(repeat, repeat)
+        ]
+        without = [
+            (variant, shape, strength, repeat)
+            for variant in ("no_instrument", "no_instrument_20000")
+            for repeat in range(REPEATS)
+            for shape, strength in OFF_AND_LINEAR
+        ]
+        return with_instrument + without
     raise SystemExit(f"unknown run {run!r}")
 
 
@@ -94,6 +114,11 @@ def run_one(run, variant, shape, strength, repeat, commit):
     elif run == "as_feature":
         n, options = grid.N_PATIENTS, {"instrument_strength": 1.0}
         fits = (("plain_with_instrument", {"link_errors": False, "instrument_as_feature": True}),)
+    elif run == "per_drug_noise":
+        n = MANY_PATIENTS if variant == "no_instrument_20000" else grid.N_PATIENTS
+        with_instrument = variant == "ideal_instrument"
+        options = {"instrument_strength": 1.0} if with_instrument else {}
+        fits = (("joint_per_drug_noise", {"use_instrument": with_instrument, "noise_per_drug": True}),)
     else:
         n, options = MANY_PATIENTS, {}
         fits = (("plain", {"link_errors": False}), ("joint", {}))
@@ -152,7 +177,7 @@ def save(results, rows):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run", required=True, choices=["realistic", "as_feature", "more_patients"])
+    parser.add_argument("--run", required=True, choices=["realistic", "as_feature", "more_patients", "per_drug_noise"])
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args()
 
