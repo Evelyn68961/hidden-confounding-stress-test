@@ -128,3 +128,10 @@ Both commands continue where they left off. From the repository root:
 - Memory at 23:29: free physical 3.1 GB; free commit 2.6 GB; lowest free commit in the last two hours 2.2 GB (the limit for dropping to 3 workers is 1.5 GB).
 - Processes at 23:30: workers: 1939MB/3880MB private, started 22:29; 1772MB/3880MB private, started 22:36; 1643MB/3880MB private, started 18:28; 407MB/1214MB private, started 23:27; 24MB/276MB private, started 15:06; 9MB/4MB private, started 15:06
 - Checks are now driven by a two-hour timer inside the runner's watcher, because the scheduled checks never fired.
+
+### 2026-10-13, 01:31: check
+
+- Job A: 66 datasets done of 660 (120 fit rows of 1,180). [47/641] since the 15:06 restart. No error in the log.
+- The repeat 1 linear 20,000-patient fit finished after 18,680 s (5 h 11 min); it overlapped with two other long fits. Long fits so far: 11,333, 11,481, 12,015 and 18,680 s.
+- Running: the repeat 2 pair of long fits (started 22:29 and 22:36, 3.88 GB private each) and two ordinary workers.
+- Memory: free physical 1.5 GB; free commit 5.7 GB; lowest free commit in the last two hours 2.5 GB.
