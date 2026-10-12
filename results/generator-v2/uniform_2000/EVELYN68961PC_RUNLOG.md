@@ -142,3 +142,10 @@ Both commands continue where they left off. From the repository root:
 - Five 20,000-patient fits done so far (the latest: repeat 2, hidden factor off, 12,100 s). The repeat 2 linear fit, started 22:36, is still running after 5 hours. Two more long fits started at 03:04 and 03:23 (the repeat 3 pair).
 - Memory: free physical 2.6 GB; free commit 5.4 GB; lowest free commit in the last two hours 4.9 GB.
 - 02:1x. Pulled the lead's text-only commit d2cf152 with rebase (README and report files only; nothing under `src/` or `scripts/`), and published as d6a9f80. The run was not restarted.
+
+### 2026-10-13, 05:40: check
+
+- Job A: 82 datasets done of 660 (148 fit rows of 1,180). [63/641] since the 15:06 restart. No error in the log.
+- Six 20,000-patient fits done. The repeat 2 linear fit took 18,405 s (5 h 7 min). The repeat 3 pair (started 03:04 and 03:23) is running, with two ordinary workers.
+- Memory: free physical 1.5 GB; free commit 4.6 GB; lowest free commit in the last two hours 4.0 GB.
+- Measured rate: about 80 datasets (four repeats of the first block) in the 17.5 hours since 12:07 on 12 October, so about 4.4 hours per repeat. At that rate the first 400 datasets (20 repeats) need about 88 hours in all, ending around 04:00 on 16 October. This is slower than the lead's estimate of about 3 days. Reported to the lead.
