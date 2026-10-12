@@ -66,3 +66,27 @@ Both commands continue where they left off. From the repository root:
 
 - A forest fit with `--warmup 1000` has never finished on this computer: 75 minutes with 2 workers and 81 minutes with 1 worker were not enough, and one worker needs more than 4 GB. Phase 2 cannot assume several forest workers on 15.7 GB.
 - Job A's workers grow over time. If that continues, job A alone may reach the memory limit; a watcher now fires under 0.8 GB free.
+
+### 2026-10-12, 15:05: planned restart of job A on c0c56a8
+
+- The lead found the cause of job A's growing memory: worker processes lived for the whole run. Commit c0c56a8 starts a fresh worker process for every dataset (one changed line in `scripts/14_uniform_runs.py`).
+- 15:05:35. A dataset was saved (34 rows, 19 datasets). Job A stopped at that moment; the other three fits in progress will be redone.
+- `git pull` to c0c56a8. 15:05:59. Job A restarted with 4 workers. It printed "641 datasets (1146 fits) to run". Rows from here on record c0c56a8.
+- 15:07. The four new workers were at 333 to 356 MB each. Free memory 7.1 GB (it was 3.8 GB before the restart).
+- Job B remains stopped until phase 2. The lead confirmed that more than 4 GB per forest fit is expected, and asked for 2 forest workers in phase 2, 3 only if memory allows.
+
+## Open points (updated 15:07)
+
+- Confirm at the next check that job A's workers fall back to a few hundred MB each time a dataset finishes.
+- Minutes per forest fit with `--warmup 1000`: still unknown; no fit has finished on this computer.
+
+### 2026-10-12, 17:31: check
+
+- Job A: 27 datasets done of 660 (50 fit rows). Since the 15:06 restart: 8 datasets, at 1273, 1331, 1465, 3188, 3265, 1617, 1507 and 1497 s. The two slow ones were both `no_instrument` (none 0.0 repeat 1; linear 1.0 repeat 1).
+- The fresh-worker change works for ordinary datasets: two workers started at 17:12 and 17:15 hold 1.0 GB working set (1.6 GB private).
+- Two workers started at 15:06 are still on their first dataset after 145 minutes, at 3.0 GB working set and 3.88 GB private memory each. The log does not say which datasets they are. No error in the log.
+- Memory: free physical 0.62 GB; free commit 4.55 GB of 31.2 GB; page file 1.4 GB in use.
+- The lead was asked whether this is expected and whether to drop to 3 workers. The lead's session was offline at the time; the message is queued.
+- Rule until the lead answers: if free commit goes under 1.5 GB, stop job A and restart it with 3 workers.
+- The scheduled 16:17 check did not fire in the runner's session; this entry and the publish after it were done by hand.
+- Job B remains stopped.
