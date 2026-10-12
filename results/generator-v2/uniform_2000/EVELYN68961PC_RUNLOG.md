@@ -135,3 +135,10 @@ Both commands continue where they left off. From the repository root:
 - The repeat 1 linear 20,000-patient fit finished after 18,680 s (5 h 11 min); it overlapped with two other long fits. Long fits so far: 11,333, 11,481, 12,015 and 18,680 s.
 - Running: the repeat 2 pair of long fits (started 22:29 and 22:36, 3.88 GB private each) and two ordinary workers.
 - Memory: free physical 1.5 GB; free commit 5.7 GB; lowest free commit in the last two hours 2.5 GB.
+
+### 2026-10-13, 03:35: check
+
+- Job A: 77 datasets done of 660 (138 fit rows of 1,180). [58/641] since the 15:06 restart. No error in the log.
+- Five 20,000-patient fits done so far (the latest: repeat 2, hidden factor off, 12,100 s). The repeat 2 linear fit, started 22:36, is still running after 5 hours. Two more long fits started at 03:04 and 03:23 (the repeat 3 pair).
+- Memory: free physical 2.6 GB; free commit 5.4 GB; lowest free commit in the last two hours 4.9 GB.
+- 02:1x. Pulled the lead's text-only commit d2cf152 with rebase (README and report files only; nothing under `src/` or `scripts/`), and published as d6a9f80. The run was not restarted.
