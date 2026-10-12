@@ -121,3 +121,10 @@ Both commands continue where they left off. From the repository root:
 - Memory: free physical 1.7 GB; free commit 4.7 GB.
 - The scheduled checks at 18:17 and 20:17 did not fire; this entry and the publish after it were done by hand.
 - Job B waits for the first 400 datasets.
+
+### 2026-10-12, 23:30: check
+
+- Job A: 59 datasets done of 660 (106 fit rows of 1,180). [40/641] since the 15:06 restart. No error in the log.
+- Memory at 23:29: free physical 3.1 GB; free commit 2.6 GB; lowest free commit in the last two hours 2.2 GB (the limit for dropping to 3 workers is 1.5 GB).
+- Processes at 23:30: workers: 1939MB/3880MB private, started 22:29; 1772MB/3880MB private, started 22:36; 1643MB/3880MB private, started 18:28; 407MB/1214MB private, started 23:27; 24MB/276MB private, started 15:06; 9MB/4MB private, started 15:06
+- Checks are now driven by a two-hour timer inside the runner's watcher, because the scheduled checks never fired.
