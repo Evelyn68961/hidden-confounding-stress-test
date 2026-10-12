@@ -29,6 +29,13 @@ Each run answers one question left open by reports 06 and 08.
                  ideal instrument at strength 0.5, datasets 10 to 19 at
                  strength 1.0, and the four less ideal instruments.
 
+  to_twenty      Brings every follow-up setting from ten datasets to twenty,
+                 so that all results rest on the same number. It fits datasets
+                 10 to 19 only, with the models the reports use: the plain
+                 regression and the joint model with a noise level per drug.
+                 Earlier rows are not touched; the new rows go to their own
+                 folder.
+
 Ten datasets per setting, with the same seeds as scripts 08 and 10, so each
 result can be set beside the earlier one for the same simulated hidden factor.
 
@@ -37,6 +44,7 @@ Results go to results/generator-v<version>/<run>/<COMPUTER NAME>.csv.
 Run:  uv run python scripts/12_followup_runs.py --run realistic       (about 1.5 hours)
       uv run python scripts/12_followup_runs.py --run as_feature      (about 30 minutes)
       uv run python scripts/12_followup_runs.py --run more_patients   (about 1 hour)
+      uv run python scripts/12_followup_runs.py --run to_twenty       (several hours)
 """
 
 import argparse
@@ -118,6 +126,25 @@ def settings_for(run):
             ]
         )
         return with_instrument + without + second_part
+    if run == "to_twenty":
+        new = range(REPEATS, 2 * REPEATS)
+        return (
+            [("no_instrument", shape, strength, repeat) for repeat in new for shape, strength in OFF_AND_LINEAR]
+            + [
+                (variant, shape, strength, repeat)
+                for repeat in new
+                for variant in INSTRUMENTS
+                for shape, strength in OFF_AND_LINEAR
+            ]
+            + [
+                (variant, shape, strength, repeat)
+                for variant in ("ideal_instrument_0.5", "ideal_as_feature")
+                for repeat in new
+                for shape, strength, _ in grid.all_settings(repeat, repeat)
+            ]
+            # The 20,000-patient fits are the slowest, so they go last.
+            + [("no_instrument_20000", shape, strength, repeat) for repeat in new for shape, strength in OFF_AND_LINEAR]
+        )
     raise SystemExit(f"unknown run {run!r}")
 
 
@@ -148,6 +175,23 @@ def run_one(run, variant, shape, strength, repeat, commit):
         else:
             options = {}
         fits = (("joint_per_drug_noise", {"use_instrument": with_instrument, "noise_per_drug": True}),)
+    elif run == "to_twenty":
+        plain = ("plain", {"link_errors": False})
+        corrected = ("joint_per_drug_noise", {"use_instrument": True, "noise_per_drug": True})
+        corrected_no_instrument = ("joint_per_drug_noise", {"noise_per_drug": True})
+        if variant in INSTRUMENTS:
+            n, options, fits = grid.N_PATIENTS, INSTRUMENTS[variant], (plain, corrected)
+        elif variant == "ideal_instrument_0.5":
+            # The plain regression for these datasets is already in instrument/.
+            n, options, fits = grid.N_PATIENTS, {"instrument_strength": 0.5}, (corrected,)
+        elif variant == "ideal_as_feature":
+            n, options = grid.N_PATIENTS, {"instrument_strength": 1.0}
+            fits = (("plain_with_instrument", {"link_errors": False, "instrument_as_feature": True}),)
+        elif variant == "no_instrument":
+            # The plain regression for these datasets is already in joint_model/.
+            n, options, fits = grid.N_PATIENTS, {}, (corrected_no_instrument,)
+        else:
+            n, options, fits = MANY_PATIENTS, {}, (plain, corrected_no_instrument)
     else:
         n, options = MANY_PATIENTS, {}
         fits = (("plain", {"link_errors": False}), ("joint", {}))
@@ -206,7 +250,7 @@ def save(results, rows):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run", required=True, choices=["realistic", "as_feature", "more_patients", "per_drug_noise"])
+    parser.add_argument("--run", required=True, choices=["realistic", "as_feature", "more_patients", "per_drug_noise", "to_twenty"])
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args()
 
