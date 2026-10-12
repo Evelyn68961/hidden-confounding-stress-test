@@ -194,7 +194,8 @@ if __name__ == "__main__":
         flush=True,
     )
 
-    with ProcessPoolExecutor(max_workers=args.workers) as pool:
+    # A fresh worker process for every dataset: a long-lived worker's memory grows from fit to fit.
+    with ProcessPoolExecutor(max_workers=args.workers, max_tasks_per_child=1) as pool:
         jobs = [pool.submit(run_one, *setting, commit) for setting in todo]
         for count, job in enumerate(as_completed(jobs), start=1):
             rows = job.result()
