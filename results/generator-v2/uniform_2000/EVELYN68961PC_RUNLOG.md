@@ -149,3 +149,8 @@ Both commands continue where they left off. From the repository root:
 - Six 20,000-patient fits done. The repeat 2 linear fit took 18,405 s (5 h 7 min). The repeat 3 pair (started 03:04 and 03:23) is running, with two ordinary workers.
 - Memory: free physical 1.5 GB; free commit 4.6 GB; lowest free commit in the last two hours 4.0 GB.
 - Measured rate: about 80 datasets (four repeats of the first block) in the 17.5 hours since 12:07 on 12 October, so about 4.4 hours per repeat. At that rate the first 400 datasets (20 repeats) need about 88 hours in all, ending around 04:00 on 16 October. This is slower than the lead's estimate of about 3 days. Reported to the lead.
+
+### 2026-10-13, 07:43: check
+
+- Job A: 98 datasets done of 660 (176 fit rows of 1,180). No error in the log.
+- Running workers: 2595 MB private, started 07:32; 2596 MB private, started 07:37; 1215 MB private, started 07:37; 705 MB private, started 07:42. Free physical 5.6 GB; free commit 8.3 GB. Lowest free commit in the last two hours: 4497 MB.
