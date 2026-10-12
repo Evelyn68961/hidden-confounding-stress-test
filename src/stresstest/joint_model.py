@@ -42,6 +42,7 @@ def fit_joint_model(
     use_instrument: bool = False,
     instrument_as_feature: bool = False,
     noise_per_drug: bool = False,
+    draws: int = DRAWS,
 ):
     """Fit the joint model.
 
@@ -63,6 +64,8 @@ def fit_joint_model(
     With `noise_per_drug=True`, each drug has its own noise level. The default
     is one level for both, which the simulated patients do not obey: their
     results vary more on the GLP-1 drug.
+
+    `draws` is the number of draws kept from each chain.
     """
     features = patients.features
     if instrument_as_feature:
@@ -113,7 +116,7 @@ def fit_joint_model(
         pm.Deterministic("effect", effect * y_scale)  # back to mmol/mol
 
         fit = pm.sample(
-            draws=DRAWS,
+            draws=draws,
             tune=WARMUP,
             chains=CHAINS,
             cores=1,
