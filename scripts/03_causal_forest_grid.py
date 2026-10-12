@@ -14,7 +14,13 @@ Each finished fit is added to that file straight away. If the script is
 stopped, running it again continues where it left off. Fits that any computer
 has already saved are skipped.
 
+With --warmup N the forest throws away N draws at the start of each chain
+instead of its default of 500, and the results go to their own folder,
+results/generator-v<version>/forest_warmup_<N>/, so the default results are
+not touched. --warmup 1000 matches the warm-up of the PyMC models.
+
 Run:  uv run python scripts/03_causal_forest_grid.py --repeats 0-9
+      uv run python scripts/03_causal_forest_grid.py --warmup 1000
 See docs/RUNNER.md for running it on a second computer.
 """
 
@@ -67,7 +73,7 @@ def all_settings(first_repeat, last_repeat):
     return settings
 
 
-def run_one(shape, strength, repeat, commit):
+def run_one(shape, strength, repeat, commit, warmup=None):
     """Simulate one dataset, fit the forest, and return one row of results."""
     from stresstest.causal_forest import fit_causal_forest
     from stresstest.generator import make_patients
@@ -78,7 +84,10 @@ def run_one(shape, strength, repeat, commit):
     patients = make_patients(
         N_PATIENTS, strength, "linear" if shape == "none" else shape, seed=repeat
     )
-    effect_draws = fit_causal_forest(patients, seed=repeat)
+    if warmup is None:
+        effect_draws = fit_causal_forest(patients, seed=repeat)
+    else:
+        effect_draws = fit_causal_forest(patients, seed=repeat, warmup=warmup)
 
     row = {
         "generator_version": GENERATOR_VERSION,
@@ -88,6 +97,8 @@ def run_one(shape, strength, repeat, commit):
         "strength": strength,
         "repeat": repeat,
     }
+    if warmup is not None:
+        row["warmup_per_chain"] = warmup
     row["crude_error"] = crude_error(patients)
     row.update(score(effect_draws, patients.true_effect))
     row.update(convergence(effect_draws))
@@ -118,10 +129,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--repeats", default=f"0-{REPEATS - 1}", help="range of repeats, e.g. 0-9")
     parser.add_argument("--workers", type=int, default=4, help="fits to run side by side")
+    parser.add_argument("--warmup", type=int, default=None, help="warm-up draws per chain, if not the default")
     args = parser.parse_args()
     first_repeat, last_repeat = (int(x) for x in args.repeats.split("-"))
     if not 0 <= first_repeat <= last_repeat < REPEATS:
         raise SystemExit(f"--repeats must lie within 0-{REPEATS - 1}")
+
+    if args.warmup is not None:
+        # A different warm-up is a different set of results: its own folder.
+        FOLDER = FOLDER / f"forest_warmup_{args.warmup}"
+        RESULTS = FOLDER / f"{HOST}.csv"
 
     commit = code_commit()
     done = already_done()
@@ -133,7 +150,7 @@ if __name__ == "__main__":
     )
 
     with ProcessPoolExecutor(max_workers=args.workers) as pool:
-        jobs = [pool.submit(run_one, *setting, commit) for setting in todo]
+        jobs = [pool.submit(run_one, *setting, commit, args.warmup) for setting in todo]
         for count, job in enumerate(as_completed(jobs), start=1):
             row = job.result()
             save(row)

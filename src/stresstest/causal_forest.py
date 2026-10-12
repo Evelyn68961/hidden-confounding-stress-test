@@ -10,10 +10,11 @@ WARMUP = 500  # draws thrown away at the start of each chain
 DRAWS = 2000  # draws kept from each chain
 
 
-def fit_causal_forest(patients: Patients, seed: int = 0) -> np.ndarray:
+def fit_causal_forest(patients: Patients, seed: int = 0, warmup: int = WARMUP) -> np.ndarray:
     """Return posterior draws of each patient's drug effect.
 
     The result has three dimensions: patient, chain, draw.
+    `warmup` is the number of draws thrown away at the start of each chain.
     The forest is given only the recorded features, the drug and the outcome.
     It estimates the chance of each drug from the features itself.
     """
@@ -23,7 +24,7 @@ def fit_causal_forest(patients: Patients, seed: int = 0) -> np.ndarray:
         Z_train=patients.treated,
         y_train=patients.outcome,
         num_gfr=10,  # fast sweeps that give each chain its own starting point
-        num_burnin=WARMUP,
+        num_burnin=warmup,
         num_mcmc=DRAWS,
         general_params={"random_seed": seed, "num_chains": CHAINS},
     )
