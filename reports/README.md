@@ -21,11 +21,11 @@ report.
 | 12 | 2026-10-09 | [The joint model with four times as many patients](12_more_patients.md) | Without an instrument, was 5,000 patients simply too few for the joint model to find the hidden factor? |
 | 13 | 2026-10-09 | [Verification, and a joint model with a noise level per drug](13_verification_and_corrected_joint_model.md) | Are the numbers right, and are the explanations right? An independent review, a second method, and a corrected joint model. |
 | 14 | 2026-10-09 | [The corrected joint model on every instrument setting](14_corrected_model_all_instrument_settings.md) | Do the conclusions of reports 08 to 10 hold with the corrected joint model? |
+| 15 | 2026-10-12 | [README and summary rewritten to match the slide deck](15_readme_and_summary_rewrite.md) | Text only. Do the README and SUMMARY.md show the corrected joint model and the same terms as the slides? |
 
-A plain-language account of reports 01 to 08 is in [SUMMARY.md](SUMMARY.md).
+A plain-language account of all the reports is in [SUMMARY.md](SUMMARY.md).
 Reports from 09 on are follow-ups. Each adds data beside an earlier report
-and leaves that report's numbers as they were. They are summarised at the end
-of SUMMARY.md.
+and leaves that report's numbers as they were.
 
 **Read report 13 before quoting reports 06, 08, 10 or 12.** It corrects one
 explanation in each. Those four reports carry a dated correction. **For the

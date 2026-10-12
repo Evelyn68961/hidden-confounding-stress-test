@@ -23,6 +23,7 @@ versions are never pooled.
 | `generator-v2/as_feature/EVELYN68961.csv` | 70 | Plain regression with the instrument added as a feature (report 11) | `scripts/12_followup_runs.py --run as_feature` |
 | `generator-v2/more_patients/EVELYN68961.csv` | 40 | Plain regression and joint model on 20,000 patients, no instrument (report 12) | `scripts/12_followup_runs.py --run more_patients` |
 | `generator-v2/per_drug_noise/EVELYN68961.csv` | 330 | Joint model with a noise level per drug. 110 rows at commit 39d276b: the ideal instrument, and no instrument at 5,000 and 20,000 patients (report 13). 220 rows at commit f361672: every other instrument setting (report 14) | `scripts/12_followup_runs.py --run per_drug_noise` |
+| `generator-v2/uniform_2000/EVELYN68961PC.csv` | growing | In progress. Plain regression and joint model (noise level per drug) refitted on 20 datasets per setting with 2,000 draws per chain. Used by no report yet | `scripts/14_uniform_runs.py` |
 | `generator-v1/` | 24 | Superseded. Kept as a record and used nowhere; see its own README | |
 
 The file name is the name of the computer that produced it. Each computer
