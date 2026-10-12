@@ -90,3 +90,34 @@ Both commands continue where they left off. From the repository root:
 - Rule until the lead answers: if free commit goes under 1.5 GB, stop job A and restart it with 3 workers.
 - The scheduled 16:17 check did not fire in the runner's session; this entry and the publish after it were done by hand.
 - Job B remains stopped.
+
+### 2026-10-12, 18:16 to 18:30: the long fits explained; plan revised
+
+- 18:16. One of the two long fits finished: `no_instrument_20000 linear strength 1.0 repeat 0`, 11,333 s (3 h 9 min). The long fits are the 20,000-patient datasets, not stuck fits. Free memory after it finished: 5.0 GB physical, 8.9 GB commit. Lowest free commit seen: 4.57 GB.
+- Job A: 32 datasets done of 660. Ordinary two-fit datasets take about 1,270 to 1,620 s on c0c56a8.
+- From the lead (18:30): 40 of the 660 datasets are 20,000-patient ones, two per repeat, adjacent in the list, all inside the first 400. Each needs about 3.2 hours and 3.9 GB. Keep 4 workers. Only if free commit goes under 1.5 GB: stop job A and restart with 3 workers.
+- The lead's estimate for the first 400 datasets: about 270 worker-hours, close to 3 days with 4 workers.
+- Job B (forest) now waits for the author's decision. It is not to be started without word from the lead.
+
+## Order of work (revised 18:30; replaces the earlier list)
+
+1. Job A with 4 workers until the first 400 datasets are done; then tell the lead and publish.
+2. What follows (forest refit, or straight on with the remaining 260 datasets) depends on the lead's word. Without one, job A simply continues.
+
+### 2026-10-12, evening: the forest refit is kept
+
+- The lead passed on the author's decision: the forest refit with warm-up 1,000 is kept.
+
+## Order of work (final, replaces the lists above)
+
+1. Job A with 4 workers until the first 400 datasets are done. Only if free commit goes under 1.5 GB: stop and restart with 3 workers.
+2. Then tell the lead, publish, stop job A right after a dataset is saved, and start job B with 2 workers (3 only if memory allows). Report the time and peak memory of the first two forest fits to the lead.
+3. When all 140 forest fits are done: tell the lead, publish, and resume job A for the remaining 260 datasets.
+
+### 2026-10-12, 21:27: check
+
+- Job A: 48 datasets done of 660 (88 fit rows of 1,180). [29/641] since the 15:06 restart. No error in the log.
+- Recent ordinary datasets: 1,647 to 1,851 s. Two 20,000-patient fits have been running since 18:27 and 18:28 (2.8 and 2.1 GB working set).
+- Memory: free physical 1.7 GB; free commit 4.7 GB.
+- The scheduled checks at 18:17 and 20:17 did not fire; this entry and the publish after it were done by hand.
+- Job B waits for the first 400 datasets.
