@@ -193,3 +193,8 @@ Both commands continue where they left off. From the repository root:
 - 20:31:09. Job A stopped, as the rule requires. Lost: the repeat 7 pair of long fits (67 minutes in) and two ordinary datasets a few minutes in. 159 datasets done at the stop.
 - Job A restarted with 3 workers (see the next line of the machine log for the time). With 3 workers at most three long fits can overlap (about 11.6 GB).
 - Note on the `code_commit` column: rows written from here on record the repository HEAD at this restart, which is a results-only commit made by this runner on top of the lead's text-only commit d2cf152. Nothing under `src/` or `scripts/` differs from c0c56a8.
+
+### 2026-10-13, 22:35: check
+
+- Job A (3 workers): 163 datasets done of 660 (294 fit rows of 1,180). No error in the log.
+- Running workers: 3880 MB private, started 20:31; 3878 MB private, started 20:31; 1585 MB private, started 22:10. Free physical 3.1 GB; free commit 6.1 GB. Lowest free commit in the last two hours: 6205 MB.
