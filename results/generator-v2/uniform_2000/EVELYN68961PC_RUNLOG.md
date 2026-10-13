@@ -184,3 +184,12 @@ Both commands continue where they left off. From the repository root:
 
 - Job A: 156 datasets done of 660 (280 fit rows of 1,180). No error in the log.
 - Running workers: 3272 MB private, started 15:08; 3879 MB private, started 19:23; 3881 MB private, started 19:23; 3880 MB private, started 15:09. Free physical 3.3 GB; free commit 0.7 GB. Lowest free commit in the last two hours: 759 MB.
+
+### 2026-10-13, 19:59 to 20:32: commit limit reached; job A restarted with 3 workers
+
+- 19:59. Free commit fell to 759 MB (limit 1.5 GB). Four 20,000-patient fits were running at once: the repeat 6 pair (started 15:08 and 15:09) and the repeat 7 pair (started 19:23). Each held 3.88 GB private memory. No error in the log.
+- The runner did not stop at once, because the repeat 6 pair was about five hours in. A watcher checked every 20 seconds, with an immediate stop set for free commit under 300 MB or any error.
+- About 20:00 and 20:29. The repeat 6 pair finished and was saved: 17,528 s (hidden factor off) and 19,207 s (linear). Lowest free commit while waiting: 2.4 GB.
+- 20:31:09. Job A stopped, as the rule requires. Lost: the repeat 7 pair of long fits (67 minutes in) and two ordinary datasets a few minutes in. 159 datasets done at the stop.
+- Job A restarted with 3 workers (see the next line of the machine log for the time). With 3 workers at most three long fits can overlap (about 11.6 GB).
+- Note on the `code_commit` column: rows written from here on record the repository HEAD at this restart, which is a results-only commit made by this runner on top of the lead's text-only commit d2cf152. Nothing under `src/` or `scripts/` differs from c0c56a8.
