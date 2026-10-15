@@ -339,3 +339,8 @@ Both commands continue where they left off. From the repository root:
 - 04:43:29: the 400th dataset was saved (720 fit rows). 04:44:05: job A stopped by the runner. Work in progress and lost: two `no_instrument_20000` fits started 03:58 and 03:59, and one regular fit started 04:42; they will be redone in phase 3. The 260 datasets left therefore include those two 20,000-patient datasets.
 - The check above shows "Running workers: ." because job A had already stopped. The `=== exited` line it counted is the runner's own stop, not an error.
 - 04:44:52: job B started alone, 2 workers, `--warmup 1000`, code label 280e27f. `git diff --stat c0c56a8 HEAD -- src scripts pyproject.toml uv.lock` is empty. Rule: stop job B if free physical memory goes under 0.5 GB.
+
+### 2026-10-16, 05:32: first two forest fits saved
+
+- Job B (2 workers): fit 1 (linear, strength 0.5, repeat 0) took 2,687 s; fit 2 (none, strength 0.0, repeat 0) took 2,783 s. Both saved by 05:32.
+- Peak private memory of one worker: 5,131 MB. Lowest free physical memory since the start at 04:44: 703 MB (the stop rule is 500 MB). Free physical 8.3 GB and free commit 13.6 GB at 05:32.
