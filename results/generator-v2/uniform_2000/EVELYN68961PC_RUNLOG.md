@@ -333,3 +333,9 @@ Both commands continue where they left off. From the repository root:
 
 - Job A (3 workers): 400 datasets done of 660 (720 fit rows of 1,180). No error in the log.
 - Running workers: . Free physical 8 GB; free commit 15.5 GB. Lowest free commit in the last two hours:  MB.
+
+### 2026-10-16, 04:44: phase 2 begins
+
+- 04:43:29: the 400th dataset was saved (720 fit rows). 04:44:05: job A stopped by the runner. Work in progress and lost: two `no_instrument_20000` fits started 03:58 and 03:59, and one regular fit started 04:42; they will be redone in phase 3. The 260 datasets left therefore include those two 20,000-patient datasets.
+- The check above shows "Running workers: ." because job A had already stopped. The `=== exited` line it counted is the runner's own stop, not an error.
+- 04:44:52: job B started alone, 2 workers, `--warmup 1000`, code label 280e27f. `git diff --stat c0c56a8 HEAD -- src scripts pyproject.toml uv.lock` is empty. Rule: stop job B if free physical memory goes under 0.5 GB.
