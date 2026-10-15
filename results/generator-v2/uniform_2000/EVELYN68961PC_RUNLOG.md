@@ -303,3 +303,8 @@ Both commands continue where they left off. From the repository root:
 
 - Job A (3 workers): 344 datasets done of 660 (620 fit rows of 1,180). No error in the log.
 - Running workers: 3879 MB private, started 13:03; 1585 MB private, started 16:28; 1588 MB private, started 17:15. Free physical 3.1 GB; free commit 7.1 GB. Lowest free commit in the last two hours: 4105 MB.
+
+### 2026-10-15, 19:31: check
+
+- Job A (3 workers): 358 datasets done of 660 (644 fit rows of 1,180). No error in the log.
+- Running workers: 3211 MB private, started 19:13; 2005 MB private, started 19:07; 1438 MB private, started 19:14. Free physical 2.5 GB; free commit 8.4 GB. Lowest free commit in the last two hours: 7240 MB.
