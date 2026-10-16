@@ -350,3 +350,8 @@ Both commands continue where they left off. From the repository root:
 - 06:18:52: the runner's watcher stopped job B because free physical memory was 381 MB (rule: stop under 500 MB). Two fits in progress since about 05:32 were lost. Two fits are saved.
 - Afterwards, with job B stopped, nothing else large was running (VS Code about 1.6 GB, all other programs smaller). Two forest workers at about 5.1 GB each, plus about 4 GB for Windows and other programs, fill the 15.7 GB of this computer.
 - 06:20: job B restarted with 1 worker, following order of work item 2 (as many workers as memory allows). `git diff --stat c0c56a8 HEAD -- src scripts pyproject.toml uv.lock` is empty; code label 50d272b.
+
+### 2026-10-16, 08:20: check
+
+- Job B (1 worker): 6 forest fits saved of 140. The four fits since the 06:19 restart took 1,468 to 1,556 s each (about 25 minutes), so one worker alone saves fits as fast as two workers in parallel did (about 46 minutes each). No error in the log.
+- Peak private memory of the worker: 5,141 MB. Lowest free physical memory in the last two hours: 3,689 MB. Free commit at 08:20: 12.3 GB.
