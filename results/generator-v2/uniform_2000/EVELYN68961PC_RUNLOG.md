@@ -366,3 +366,8 @@ Both commands continue where they left off. From the repository root:
 - Job B (1 worker): 10 forest fits saved of 140. No error in the log. Fits since about 08:30 take 3,600 to 4,000 s, against about 1,500 s before.
 - Cause found: four Stan chains from another project (`C:\ics_stan_build\engine_locked_v2_benefit_triple_dose.exe`, the latest set started 12:00) each use a full processor thread, so the forest worker shares the 4 cores. They are not part of this run, and the runner leaves them alone.
 - Peak private memory of the worker: 5,167 MB. Lowest free physical memory in the last two hours: 2,625 MB. Free commit 14.0 GB at 12:23.
+
+### 2026-10-16, 14:25: check
+
+- Job B (1 worker): 11 forest fits saved of 140. No error in the log. One fit saved in the last two hours (3,840 s). Stan chains from the other project are still running (a new set of three started 13:56).
+- Peak private memory of the worker: 6,092 MB, higher than the 5.1 GB seen before. Lowest free physical memory in the last two hours: 1,834 MB. Free commit 11.0 GB at 14:25.
