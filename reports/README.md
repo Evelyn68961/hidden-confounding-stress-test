@@ -22,6 +22,7 @@ report.
 | 13 | 2026-10-09 | [Verification, and a joint model with a noise level per drug](13_verification_and_corrected_joint_model.md) | Are the numbers right, and are the explanations right? An independent review, a second method, and a corrected joint model. |
 | 14 | 2026-10-09 | [The corrected joint model on every instrument setting](14_corrected_model_all_instrument_settings.md) | Do the conclusions of reports 08 to 10 hold with the corrected joint model? |
 | 15 | 2026-10-12 | [README and summary rewritten to match the slide deck](15_readme_and_summary_rewrite.md) | Text only. Do the README and SUMMARY.md show the corrected joint model and the same terms as the slides? |
+| 16 | 2026-10-16 | [Uniform runs: the first 400 datasets](16_uniform_runs_first_400.md) | Do the results on the slides hold with 20 datasets and 2,000 draws per chain for every setting? |
 
 A plain-language account of all the reports is in [SUMMARY.md](SUMMARY.md).
 Reports from 09 on are follow-ups. Each adds data beside an earlier report
