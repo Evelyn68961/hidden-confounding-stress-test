@@ -406,3 +406,8 @@ Both commands continue where they left off. From the repository root:
 
 - Job B (1 worker): 26 forest fits saved of 140. No error in the log. Four fits saved in the last two hours (4,032, 1,562, 1,538 and 1,656 s). No Stan chains from the other project were running at 04:34, and fits are back to about 26 minutes.
 - Peak private memory of the worker: 5,188 MB. Lowest free physical memory in the last two hours: 2,243 MB. Free commit 13.1 GB at 04:34.
+
+### 2026-10-17, 06:35: check
+
+- Job B (1 worker): 30 forest fits saved of 140. No error in the log. Four fits saved in the last two hours (1,648, 1,540, 1,554 and 1,572 s). No Stan chains from the other project were running at 06:35.
+- Peak private memory of the worker: 5,197 MB. Lowest free physical memory in the last two hours: 3,057 MB. Free commit 11.6 GB at 06:35.
