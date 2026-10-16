@@ -355,3 +355,8 @@ Both commands continue where they left off. From the repository root:
 
 - Job B (1 worker): 6 forest fits saved of 140. The four fits since the 06:19 restart took 1,468 to 1,556 s each (about 25 minutes), so one worker alone saves fits as fast as two workers in parallel did (about 46 minutes each). No error in the log.
 - Peak private memory of the worker: 5,141 MB. Lowest free physical memory in the last two hours: 3,689 MB. Free commit at 08:20: 12.3 GB.
+
+### 2026-10-16, 10:22: check
+
+- Job B (1 worker): 8 forest fits saved of 140. No error in the log. The two fits since the last check took 3,811 s and 4,010 s, against about 1,500 s for the four before. The lowest free physical memory, 2,486 MB, suggests other programs were in use on the computer at the same time.
+- Peak private memory of the worker: 5,161 MB. Free physical 6.6 GB and free commit 13.1 GB at 10:22.
