@@ -631,3 +631,8 @@ Both commands continue where they left off. From the repository root:
 
 - Job B (1 worker): 116 forest fits saved of 140. No error in the log. Two fits saved in the last two hours (2,779 s and 2,618 s). Rscript processes from the other project (since 14:43) were still running; no Stan chains at 23:31.
 - Peak private memory of the worker: 5,188 MB. Lowest free physical memory in the last two hours: 2,099 MB. Free commit 9.9 GB at 23:31.
+
+### 2026-10-21, 01:33: check
+
+- Job B (1 worker): 118 forest fits saved of 140. No error in the log. Two fits saved in the last two hours (3,438 s and 4,349 s). Rscript processes from the other project (since 14:43 on 20 Oct) were still running; no Stan chains at 01:33.
+- Peak private memory of the worker: 5,189 MB. Lowest free physical memory in the last two hours: 2,066 MB. Free commit 10.6 GB at 01:33.
