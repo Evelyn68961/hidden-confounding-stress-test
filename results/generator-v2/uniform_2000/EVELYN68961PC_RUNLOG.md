@@ -661,3 +661,8 @@ Both commands continue where they left off. From the repository root:
 
 - Job B (1 worker): 137 forest fits saved of 140. No error in the log. Three fits saved in the last two hours (1,564, 1,589 and 1,425 s). New Rscript processes and four Stan chains from the other project (`engine_sens_S19_withintrial_benefit.exe`) started at 11:36.
 - Peak private memory of the worker: 5,183 MB. Lowest free physical memory in the last two hours: 2,655 MB. Free commit 10.1 GB at 11:38.
+
+### 2026-10-21, 13:00: phase 2 done, phase 3 begins
+
+- 13:00:02: job B finished: 140 of 140 forest fits saved, "finished" printed, exit code 0, no Traceback or MemoryError in its log. Total time for phase 2: 16 Oct 04:44 to 21 Oct 13:00, slowed by the other project's R and Stan jobs on this computer.
+- Job A resumes for the remaining 260 datasets with 3 workers (rule: restart with 3 workers if free commit goes under 1.5 GB). The 260 include the two `no_instrument_20000` datasets lost at the 16 Oct 04:44 stop.
