@@ -666,3 +666,8 @@ Both commands continue where they left off. From the repository root:
 
 - 13:00:02: job B finished: 140 of 140 forest fits saved, "finished" printed, exit code 0, no Traceback or MemoryError in its log. Total time for phase 2: 16 Oct 04:44 to 21 Oct 13:00, slowed by the other project's R and Stan jobs on this computer.
 - Job A resumes for the remaining 260 datasets with 3 workers (rule: restart with 3 workers if free commit goes under 1.5 GB). The 260 include the two `no_instrument_20000` datasets lost at the 16 Oct 04:44 stop.
+
+### 2026-10-21, 13:01: check
+
+- Job A (3 workers): 660 datasets done of 660 (720 fit rows of 1,180). No error in the log.
+- Running workers: . Free physical 6.3 GB; free commit 13.3 GB. Lowest free commit in the last two hours: 13739 MB.
