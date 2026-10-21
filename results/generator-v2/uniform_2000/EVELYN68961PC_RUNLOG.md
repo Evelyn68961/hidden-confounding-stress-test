@@ -672,3 +672,8 @@ Both commands continue where they left off. From the repository root:
 - Job A (3 workers): 400 datasets done of 660 (720 fit rows of 1,180); the restarted job had not yet saved its first dataset. No error in the log.
 - Correction: this entry first said "660 datasets done of 660" and listed no workers. That was wrong. The runner's helper scripts read the count from the last progress line, and the new run had not printed one yet. The watcher stopped at once for the same reason, which triggered this early check. Both scripts were fixed to handle this case.
 - Workers starting at 13:01 (595 MB private each). Free physical 6.3 GB; free commit 13.3 GB.
+
+### 2026-10-21, 15:03: check
+
+- Job A (3 workers): 404 datasets done of 660 (728 fit rows of 1,180). No error in the log.
+- Running workers: 3879 MB private, started 13:01; 3880 MB private, started 13:01; 1587 MB private, started 14:41. Free physical 0.6 GB; free commit 5.2 GB. Lowest free commit in the last two hours: 5207 MB.
