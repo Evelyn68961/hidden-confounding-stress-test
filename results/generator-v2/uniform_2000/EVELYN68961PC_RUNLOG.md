@@ -747,3 +747,10 @@ Both commands continue where they left off. From the repository root:
 
 - Job A (3 workers): 647 datasets done of 660 (1157 fit rows of 1,180). No error in the log.
 - Running workers: 1372 MB private, started 19:14; 1215 MB private, started 19:17; 1215 MB private, started 19:19. Free physical 4.5 GB; free commit 10.5 GB. Lowest free commit in the last two hours: 9583 MB.
+
+### 2026-10-22, 20:33: all work done
+
+- 20:33:21: job A finished: 660 of 660 datasets, 1,180 of 1,180 fit rows in `uniform_2000/EVELYN68961PC.csv`, "finished" printed, exit code 0, no Traceback or MemoryError since the 21 Oct 13:00 restart.
+- Job B was already complete: 140 of 140 fits in `forest_warmup_1000/EVELYN68961PC.csv` (21 Oct 13:00).
+- Phase 3 (260 datasets) took 31.5 hours with 3 workers, slowed at times by the other project's R and Stan jobs on this computer.
+- No further runs are scheduled on this computer.
