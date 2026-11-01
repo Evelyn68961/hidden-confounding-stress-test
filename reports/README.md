@@ -23,6 +23,7 @@ report.
 | 14 | 2026-10-09 | [The corrected joint model on every instrument setting](14_corrected_model_all_instrument_settings.md) | Do the conclusions of reports 08 to 10 hold with the corrected joint model? |
 | 15 | 2026-10-12 | [README and summary rewritten to match the slide deck](15_readme_and_summary_rewrite.md) | Text only. Do the README and SUMMARY.md show the corrected joint model and the same terms as the slides? |
 | 16 | 2026-10-16 | [Uniform runs: the first 400 datasets](16_uniform_runs_first_400.md) | Do the results on the slides hold with 20 datasets and 2,000 draws per chain for every setting? |
+| 17 | 2026-11-01 | [Uniform runs complete, and the causal forest refit](17_uniform_runs_complete.md) | What are the final figures with 20 datasets and 2,000 draws per chain for every setting, and does a longer warm-up change the forest? |
 
 A plain-language account of all the reports is in [SUMMARY.md](SUMMARY.md).
 Reports from 09 on are follow-ups. Each adds data beside an earlier report
