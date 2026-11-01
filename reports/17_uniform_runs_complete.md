@@ -96,8 +96,9 @@ feature, and the paired increase with its 95% interval.
 - **The conclusions of the 2026-10-12 deck hold**, with one exception below.
 - **One claim weakens.** With 10 datasets the slides said that adding the
   instrument as a feature increased the bias by 0.10 to 0.17 at strength 0.5. With
-  20 datasets the increase is 0.08 to 0.13, and all three 95% intervals reach
-  zero. The increase is clear only at strength 1 (0.34 to 0.47).
+  20 datasets the increase is 0.08 to 0.13. Two of the three 95% intervals include
+  zero, and the third starts at +0.002. The increase is clear at strength 1 (0.34
+  to 0.47).
 - **Without an instrument the joint model's RMSE is not lower at either sample
   size** (4.66 against 4.42, and 4.40 against 4.33). Its misclassification rate is
   lower at 20,000 patients (30.2 against 38.5).
